@@ -6,11 +6,10 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 22:40:58 by aevstign          #+#    #+#             */
-/*   Updated: 2025/04/05 11:36:22 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:15:54 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string>
 #include <iostream>
 #include "PhoneBook.hpp"
 #include <iomanip>
@@ -31,15 +30,20 @@ void	add_contact(PhoneBook &phoneBook)
 {
 	std::string firstname, lastname, nickname, phone_number, darkest_secret;
 	std::cout << "Now, please enter the conact info" << std::endl;
+	std::cout << "Enter fristname" << std::endl;
 	std::getline(std::cin, firstname);
+	std::cout << "Enter lastname" << std::endl;
 	std::getline(std::cin, lastname);
+	std::cout << "Enter nickname" << std::endl;
 	std::getline(std::cin, nickname);
+	std::cout << "Enter phone number" << std::endl;
 	std::getline(std::cin, phone_number);
 	while (!validate_number(phone_number))
 	{
 		std::cout << "Please, enter a valid phone number" << std::endl;
 		std::getline(std::cin, phone_number);
 	}
+	std::cout << "Enter darkest secret" << std::endl;
 	std::getline(std::cin, darkest_secret);
 	phoneBook.addContact(firstname, lastname, nickname, phone_number, darkest_secret);
 	std::cout << "Contact was created\n" << std::endl;
@@ -57,13 +61,11 @@ void	display_value(std::string value)
 
 void	display_contact(PhoneBook phoneBook, int i)
 {
-	std::cout << "|" << std::setw(10) << i;
-	display_value(phoneBook.array_of_contacts[i].getFirstname());
-	display_value(phoneBook.array_of_contacts[i].getLastname());
-	display_value(phoneBook.array_of_contacts[i].getNickname());
-	display_value(phoneBook.array_of_contacts[i].getPhoneNumber());
-	display_value(phoneBook.array_of_contacts[i].getDarkestSecret());
-	std::cout << "|" << std::endl;
+	std::cout << "First Name: " << phoneBook.array_of_contacts[i].getFirstname() << std::endl; 
+	std::cout << "Last Name: " << phoneBook.array_of_contacts[i].getLastname() << std::endl; 
+	std::cout << "Nickname: " << phoneBook.array_of_contacts[i].getNickname() << std::endl; 
+	std::cout << "Phone Number: " << phoneBook.array_of_contacts[i].getPhoneNumber() << std::endl; 
+	std::cout << "Darkest Secret: " << phoneBook.array_of_contacts[i].getDarkestSecret() << std::endl; 
 }
 
 void	search(PhoneBook phoneBook)
@@ -88,7 +90,9 @@ void	search(PhoneBook phoneBook)
 		std::cin.clear();
 		return ;
 	}
+	std::cout << std::endl;
 	display_contact(phoneBook, index);
+	std::cout << std::endl;
 }
 
 int	main(void)
@@ -104,6 +108,11 @@ int	main(void)
 			add_contact(phoneBook);
 		else if (command.compare("SEARCH") == 0)
 		{
+			std::cout << "|" << std::setw(10) << "Index"
+			<< "|" << std::setw(10) << "Firstname"
+			<< "|" << std::setw(10) << "Lastname"
+			<< "|" << std::setw(10) << "Nickname"
+			<< "|" << std::endl;
 			search(phoneBook);
 			// Dummy getline
 			getline(std::cin, command);
