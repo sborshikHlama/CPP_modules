@@ -6,11 +6,16 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 09:55:33 by aevstign          #+#    #+#             */
-/*   Updated: 2025/03/29 10:03:02 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/04/05 00:06:16 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Contact.hpp"
+
+Contact::Contact()
+{
+	return ;
+}
 
 Contact::Contact(std::string firstname, std::string lastname, std::string nickname, std::string phone_number, std::string darkest_secret)
 {

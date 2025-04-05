@@ -2,7 +2,7 @@ SRCS = main.cpp \
 		Contact.cpp \
 		PhoneBook.cpp
 
-OBJS = $(SRCS:.cpp = .o)
+OBJS=$(subst .cpp,.o,$(SRCS))
 
 NAME = phonebook
 CXXFLAGS = -Wall -Werror -Wextra -std=c++98
