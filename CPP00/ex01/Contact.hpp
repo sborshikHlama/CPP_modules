@@ -24,10 +24,10 @@ class Contact {
 		Contact(std::string firstname,std::string lastname,
 			std::string nickname, std::string phone_number, std::string darkest_secret);
 		
-		std::string getFirstname();
-		std::string getLastname();
-		std::string getNickname();
-		std::string getPhoneNumber();
-		std::string getDarkestSecret();
+		std::string getFirstname() const;
+		std::string getLastname() const;
+		std::string getNickname() const;
+		std::string getPhoneNumber() const;
+		std::string getDarkestSecret() const;
 };
 

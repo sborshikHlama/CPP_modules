@@ -5,21 +5,21 @@ SRCS = main.cpp \
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 NAME = phonebook
-CXXFLAGS = -Wall -Werror -Wextra -std=c++98
-CXX = c++
+CPPFLAGS = -Wall -Werror -Wextra -std=c++98
+CPP = c++
 RM = rm -f
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+	$(CPP) $(CPPFLAGS) -o $(NAME) $(OBJS)
 
 %.o: %.c
-	$(CXX) $(CXXFLAGS) -c $ < -o $@
+	$(CPP) $(CPPFLAGS) -c $ < -o $@
 
 clean:
 	$(RM) $(OBJS)
-flcean: clean
+fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all

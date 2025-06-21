@@ -23,6 +23,7 @@ class PhoneBook {
 	public:
 			Contact array_of_contacts[MAX_CONTACTS];
 			PhoneBook();
+			~PhoneBook();
 			void addContact(std::string firstname,std::string lastname,
 					std::string nickname, std::string phone_number, std::string darkest_secret);
 			int	getCounter();

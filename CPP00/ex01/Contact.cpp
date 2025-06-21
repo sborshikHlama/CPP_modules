@@ -12,10 +12,7 @@
 
 #include "Contact.hpp"
 
-Contact::Contact()
-{
-	return ;
-}
+Contact::Contact() {}
 
 Contact::Contact(std::string firstname, std::string lastname, std::string nickname, std::string phone_number, std::string darkest_secret)
 {
@@ -26,27 +23,22 @@ Contact::Contact(std::string firstname, std::string lastname, std::string nickna
 	this->darkest_secret = darkest_secret;
 }
 
-std::string Contact::getFirstname()
-{
+std::string Contact::getFirstname() const {
 	return (this->firstname);
 }
 
-std::string Contact::getLastname()
-{
+std::string Contact::getLastname() const {
 	return (this->lastname);
 }
 
-std::string Contact::getNickname()
-{
+std::string Contact::getNickname() const {
 	return (this->nickname);
 }
 
-std::string Contact::getPhoneNumber()
-{
+std::string Contact::getPhoneNumber() const {
 	return (this->phone_number);
 }
 
-std::string Contact::getDarkestSecret()
-{
+std::string Contact::getDarkestSecret() const {
 	return (this->darkest_secret);
 }

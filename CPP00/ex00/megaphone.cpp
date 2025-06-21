@@ -8,9 +8,10 @@ int	main(int argc, char **argv)
 		std::cout << "* LOUD AND UNBEARABLE FEEDBACK NOISE *\n";	
 		return (1);
 	}
-	for (int i = 1; argv[i]; i++)
+	for (int i = 1; i < argc; i++)
 	{
-		for (int j = 0; argv[i][j]; j++)
+		std::string word = argv[i];
+		for (unsigned int j = 0; j < word.length(); j++)
 			std::cout  << (char) std::toupper(argv[i][j]);	
 	}
 	std::cout << std::endl;

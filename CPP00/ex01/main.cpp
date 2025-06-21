@@ -95,18 +95,18 @@ void	search(PhoneBook phoneBook)
 	std::cout << std::endl;
 }
 
-int	main(void)
+int	main()
 {
 	std::string	command;
 	PhoneBook	phoneBook;
 	
-	while (1)
+	while (true)
 	{
 		std::cout << "Enter the command" << std::endl;
 		std::getline(std::cin, command);
-		if (command.compare("ADD") == 0)
+		if (command == "ADD" || command == "add")
 			add_contact(phoneBook);
-		else if (command.compare("SEARCH") == 0)
+		else if (command == "SEARCH" || command == "search")
 		{
 			std::cout << "|" << std::setw(10) << "Index"
 			<< "|" << std::setw(10) << "Firstname"
