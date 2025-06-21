@@ -1,44 +1,37 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Contact.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/29 09:55:33 by aevstign          #+#    #+#             */
-/*   Updated: 2025/04/05 12:04:19 by aevstign         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+//
+// Created by Arsenii on 15.06.2025.
+//
 
-#include "Contact.hpp"
-
+#include "Contact.h"
 Contact::Contact() {}
 
-Contact::Contact(std::string firstname, std::string lastname, std::string nickname, std::string phone_number, std::string darkest_secret)
+Contact::~Contact() {}
+
+Contact::Contact(std::string info[])
 {
-	this->firstname = firstname;
-	this->lastname = lastname;
-	this->nickname = nickname;
-	this->phone_number = phone_number;
-	this->darkest_secret = darkest_secret;
+    this->firstname = info[0];
+    this->lastname = info[1];
+    this->nickname = info[2];
+    this->phone_number = info[3];
+    this->darkest_secret = info[4];
 }
 
 std::string Contact::getFirstname() const {
-	return (this->firstname);
+    return (this->firstname);
 }
 
 std::string Contact::getLastname() const {
-	return (this->lastname);
+    return (this->lastname);
 }
 
 std::string Contact::getNickname() const {
-	return (this->nickname);
+    return (this->nickname);
 }
 
 std::string Contact::getPhoneNumber() const {
-	return (this->phone_number);
+    return (this->phone_number);
 }
 
 std::string Contact::getDarkestSecret() const {
-	return (this->darkest_secret);
+    return (this->darkest_secret);
 }
