@@ -11,8 +11,9 @@ int	main(int argc, char **argv)
 	for (int i = 1; i < argc; i++)
 	{
 		std::string word = argv[i];
-		for (unsigned int j = 0; j < word.length(); j++)
-			std::cout  << (char) std::toupper(argv[i][j]);	
+		for (unsigned long j = 0; j < word.length(); j++)
+			word[j] = std::toupper(word[j]);
+		std::cout << word;
 	}
 	std::cout << std::endl;
 	return (0);
