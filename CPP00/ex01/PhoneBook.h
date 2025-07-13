@@ -13,17 +13,19 @@ class PhoneBook {
 private:
     int	next_index;
     int	counter;
-    void	displayValue(const std::string &value) const;
-    void	displayContact(const Contact &contact) const;
-    bool    validateNumber(const std::string &number) const;
+    static void	displayValue(const std::string &value, const bool full) ;
+    static void	displayContact(const Contact &contact, const bool full) ;
+	static bool	getInput(std::string &dst);
+    static bool validateNumber(const std::string &number) ;
+	static bool	promptInput(std::string labels, std::string &dst);
 public:
-    Contact array_of_contacts[MAX_CONTACTS];
+    Contact contact[MAX_CONTACTS];
     PhoneBook();
     ~PhoneBook();
     void add(std::string info[]);
     void search() const;
     void loop();
-    void read_input();
+    void readInput();
     int	getCounter() const;
 };
 
