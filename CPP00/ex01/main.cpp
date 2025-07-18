@@ -13,7 +13,6 @@ int	main()
     std::string inputs5[5] = {"jim", "toto", "tutu", "53453453", "lolo"};
     std::string inputs6[5] = {"nobody", "polo", "nono", "34534535", "seru"};
     std::string inputs7[5] = {"bimo", "bobo", "koko", "3453453", "fofo"};
-   /*
 	phoneBook.add(inputs0);
     phoneBook.add(inputs1);
     phoneBook.add(inputs2);
@@ -22,7 +21,6 @@ int	main()
     phoneBook.add(inputs5);
     phoneBook.add(inputs6);
     phoneBook.add(inputs7);
-	*/
     phoneBook.loop();
     return (0);
 }

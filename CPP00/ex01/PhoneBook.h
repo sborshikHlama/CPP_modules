@@ -6,6 +6,7 @@
 #define PHONEBOOK_H
 
 # include "Contact.h"
+# include <sstream>
 # include <iomanip>
 # define MAX_CONTACTS 8
 
@@ -13,11 +14,9 @@ class PhoneBook {
 private:
     int	next_index;
     int	counter;
-    static void	displayValue(const std::string &value, const bool full) ;
-    static void	displayContact(const Contact &contact, const bool full) ;
+    static void	displayContact(const Contact &contact, bool full) ;
 	static bool	getInput(std::string &dst);
-    static bool validateNumber(const std::string &number) ;
-	static bool	promptInput(std::string labels, std::string &dst);
+    static bool validatePhone(const std::string &phone_number) ;
 public:
     Contact contact[MAX_CONTACTS];
     PhoneBook();

@@ -13,29 +13,33 @@ PhoneBook::PhoneBook()
 PhoneBook::~PhoneBook() {}
 
 // Display functions
+void	PhoneBook::displayContact(const Contact &contact, const bool full)
+{
+	std::pair<std::string, std::string> const contact_fields[5] = {
+		std::make_pair("First Name: ", contact.getFirstname()),
+		std::make_pair("Last Name: ", contact.getLastname()),
+		std::make_pair("Nickname: ", contact.getNickname()),
+		std::make_pair("Phone: ", contact.getPhoneNumber()),
+		std::make_pair("Darkest secret: ", contact.getDarkestSecret())
+	};
 
-void	PhoneBook::displayValue(const std::string &value, const bool full) {
-    std::string	formatted;
-
-    if (value.length() > 10 && !full)
-        std::cout << "|" << std::setw(10) << value.substr(0, 9) + ".";
-    else
-        std::cout << "|" << std::setw(10) << value;
-}
-
-void	PhoneBook::displayContact(const Contact &contact, const bool full) {
-    PhoneBook::displayValue(contact.getFirstname(), full);
-    PhoneBook::displayValue(contact.getLastname(), full);
-    PhoneBook::displayValue(contact.getNickname(), full);
-	if (full)
+	for (int i = 0; i < 5; i++)
 	{
-		PhoneBook::displayValue(contact.getPhoneNumber(), full);
-		PhoneBook::displayValue(contact.getDarkestSecret(), full);
+		if (full)
+			std::cout << contact_fields[i].first  << contact_fields[i].second << std::endl;
+		else
+		{
+			if (i == 3)
+				break;
+			std::string formatted;
+			formatted = contact_fields[i].second.length() > 10 ?
+				contact_fields[i].second.substr(0, 9) + "." : contact_fields[i].second;
+			std::cout << "|" << std::setw(10) << formatted;
+		}
 	}
 }
 
 // Subject functions
-
 void PhoneBook::add(std::string info[])
 {
     contact[this->next_index] = Contact(info);
@@ -46,6 +50,8 @@ void PhoneBook::add(std::string info[])
 
 void	PhoneBook::search() const {
     int	index;
+	char leftover;
+	std::string str;
 
 	for (int i = 0; i < this->getCounter(); i++)
 	{
@@ -54,11 +60,14 @@ void	PhoneBook::search() const {
 		std::cout << "|" << std::endl;
 	}
     std::cout << "Enter the contact index" << std::endl;
-    std::cin >> index;
-    if (std::cin.fail() || index > this->getCounter() - 1 || index < 0)
+	std::getline(std::cin, str);
+	std::istringstream iss(str);
+	iss >> index;
+    if (iss.fail() || index >= this->getCounter()
+		|| index < 0 || (iss >> leftover))
     {
         std::cout << "Invalid Index!\n" << std::endl;
-        std::cin.clear();
+        iss.clear();
         return ;
     }
     std::cout << std::endl;
@@ -70,13 +79,12 @@ int PhoneBook::getCounter() const {
     return (this->counter);
 }
 
-bool	PhoneBook::validateNumber(const std::string &number) {
-    for(std::string::size_type i = 0; i < number.length(); i++)
+bool	PhoneBook::validatePhone(const std::string &phone_number)
+{
+    for(std::string::size_type i = 0; i < phone_number.length(); i++)
     {
-        if (number[i] == ' ')
-            i++;
-        else if (number[i] < '0' || number[i] > '9')
-            return (false);
+    	if (!std::isdigit(phone_number[i]) && phone_number[i] != '+')
+    		return false;
     }
     return (true);
 }
@@ -100,14 +108,8 @@ bool	PhoneBook::getInput(std::string &dst)
 	return (true);
 }
 
-bool	PhoneBook::promptInput(std::string label, std::string &dst)
+void	PhoneBook::readInput()
 {
-	std::cout << "Enter: " << label << std::endl;
-	if (!PhoneBook::getInput(dst)) return (false);
-	return (true);
-}
-
-void	PhoneBook::readInput() {
     std::string info[5];
 	std::string labels[5] = {"First Name", "Last Name", "Nickname",
 		"Phone Number", "Darkest Secret"};
@@ -115,8 +117,9 @@ void	PhoneBook::readInput() {
     std::cout << "Now, please enter the contact info" << std::endl;
 	for (int i = 0; i < 5; i++)
 	{
-		if (!PhoneBook::promptInput(labels[i], info[i])) return;
-		if (i == 3 && !PhoneBook::validateNumber(info[3]))
+		std::cout << "Enter: " << labels[i] << std::endl;
+		if (!getInput(info[i])) return;
+		if (i == 3 && !PhoneBook::validatePhone(info[3]))
 		{
 			std::cout << "Number can contain only digits!" << std::endl;
 			return;
@@ -134,9 +137,10 @@ void    PhoneBook::loop()
     {
         std::cout << "Enter the command" << std::endl;
         std::getline(std::cin, command);
-        if (command == "ADD" || command == "add" || command == "a")
+    	std::transform(command.begin(), command.end(), command.begin(), ::tolower);
+        if (command == "add" || command == "a")
             this->readInput();
-        else if (command == "SEARCH" || command == "search" || command == "s")
+        else if (command == "search" || command == "s")
         {
             std::cout << "|" << std::setw(10) << "Index"
             << "|" << std::setw(10) << "Firstname"
@@ -144,10 +148,8 @@ void    PhoneBook::loop()
             << "|" << std::setw(10) << "Nickname"
             << "|" << std::endl;
             this->search();
-            // Dummy getline
-            getline(std::cin, command);
         }
-        else if (command == "EXIT" || command == "exit" || command == "e")
+        else if (command == "exit" || command == "e")
             break;
         else
             std::cout << "Invalid command" << std::endl;
