@@ -16,7 +16,7 @@ private:
     std::string darkest_secret;
 public:
     Contact();
-    Contact(std::string info[]);
+    explicit Contact(std::string info[]);
     ~Contact();
 
     std::string getFirstname() const;

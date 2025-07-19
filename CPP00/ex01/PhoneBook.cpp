@@ -32,8 +32,9 @@ void	PhoneBook::displayContact(const Contact &contact, const bool full)
 			if (i == 3)
 				break;
 			std::string formatted;
-			formatted = contact_fields[i].second.length() > 10 ?
-				contact_fields[i].second.substr(0, 9) + "." : contact_fields[i].second;
+			formatted = contact_fields[i].second.length() > 10
+			 ? contact_fields[i].second.substr(0, 9) + "."
+				: contact_fields[i].second;
 			std::cout << "|" << std::setw(10) << formatted;
 		}
 	}
@@ -137,7 +138,8 @@ void    PhoneBook::loop()
     {
         std::cout << "Enter the command" << std::endl;
         std::getline(std::cin, command);
-    	std::transform(command.begin(), command.end(), command.begin(), ::tolower);
+    	std::transform(command.begin(), command.end(),
+    		command.begin(), ::tolower);
         if (command == "add" || command == "a")
             this->readInput();
         else if (command == "search" || command == "s")
