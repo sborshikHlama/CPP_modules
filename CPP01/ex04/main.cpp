@@ -1,49 +1,62 @@
 #include <iostream>
 #include <fstream>
 
-int main(int argc, char** argv)
+std::string processLine(const std::string& line, const std::string& s1,
+            const std::string& s2)
 {
-    // if (argc != 4)
-    //     return 1;
+    std::string result;
+    size_t      start;
+    size_t      pos;
 
-    std::ifstream inFile;
-    std::ofstream outFile;
-    std::string line;
-    std::string s1 = argv[3];
-    std::string s2 = argv[4];
-    std::string modified_line;
+    start = 0;
+    pos = line.find(s1, start);
+    while (pos != std::string::npos)
+    {
+        result += line.substr(start, pos - start) + s2;
+        start = pos + s1.length();
+        pos = line.find(s1, start);
+    }
+    result += line.substr(start);
+    return result;
+}
 
-    inFile.open(argv[1]);
-    outFile.open(argv[2]);
+void    processFiles(const std::string& input_filename,
+        const std::string& output_filename,
+        const std::string& s1, const std::string& s2)
+{
+    std::string   line;
+    std::ifstream inFile(input_filename);
+    std::ofstream outFile(output_filename);
 
     if (!inFile.is_open() || !outFile.is_open())
     {
         std::cout << "Error opening file" << std::endl;
+        return ;
     }
-
     while (std::getline(inFile, line))
     {
-        if (s1.empty())
-            return (1);
-        modified_line = "";
-        size_t pos = 0;
-        size_t start = 0;
-        while ((pos = line.find(s1, start)) != std::string::npos)
-        {
-            std::cout << "Found at position " << pos << std::endl;
-            modified_line += line.substr(start, pos - start);
-            modified_line += s2;
-            start += pos + s1.length();
-        }
-        modified_line += line.substr(start);
-        if (!modified_line.empty())
-            outFile << modified_line << std::endl;
-        else
-            outFile << line << std::endl;
+        outFile << processLine(line, s1, s2) << std::endl;
     }
-
     inFile.close();
     outFile.close();
+}
 
+int main(int argc, char** argv)
+{
+    if (argc != 5)
+    {
+        std::cout << "Usage: input_filename output_filename s1 s2 \n" ;
+        return (1);
+    }
+
+    std::string input_filename = argv[1];
+    std::string output_filename = argv[2];
+    std::string orig_s = argv[3];
+    std::string new_s = argv[4];
+
+    if (new_s.empty() || orig_s.empty() || new_s == orig_s)
+        return (1);
+
+    processFiles(input_filename, output_filename, orig_s, new_s);
     return 0;
 }
