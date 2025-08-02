@@ -15,7 +15,6 @@ private:
     void error(void);
 public:
     void complain(std::string level);
-
 };
 
 
