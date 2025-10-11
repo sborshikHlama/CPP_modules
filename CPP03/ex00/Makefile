@@ -3,7 +3,7 @@ OBJ = $(SRCS:.cpp=.o)
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 RM = rm -f
-NAME = fixed
+NAME = war
 
 all: $(NAME)
 

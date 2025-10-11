@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClapTrap.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aevstign <aevsitgn@student.42prague.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 13:15:08 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/08 13:59:04 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/10/11 11:14:53 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,7 @@ public:
 	void takeDamage(unsigned int amount);
 	void beRepaired(unsigned int amount);
 	std::string getName(void);
+	int getHitPoints(void);
+	int getEnergyPoints(void);
+	int getAttackDamage(void);
 };
