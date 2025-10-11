@@ -3,32 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aevstign <aevsitgn@student.42prague.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 13:16:34 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/10 19:43:35 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/10/11 12:04:00 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClapTrap.hpp"
 #include "ScavTrap.hpp"
+#include "FragTrap.hpp"
 
 int	main()
 {
-	ClapTrap warriorA("Bob");
-	ClapTrap warriorB("Kelsa");
-	ClapTrap warriorClone = warriorA;
-
-	warriorA.attack(warriorB.getName());
-	warriorB.attack(warriorA.getName());
-	warriorClone.attack(warriorA.getName());
-
+	FragTrap fragy1("Ninja");
 	ScavTrap defenderA("Reinhart");
-	defenderA.attack(warriorA.getName());
+
+	fragy1.attack(defenderA.getName());
+	defenderA.attack(fragy1.getName());
 	defenderA.guardGate();
 	
 	ScavTrap defenderClone = defenderA;
 	defenderClone.guardGate();
-
 	return(0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aevstign <aevsitgn@student.42prague.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 13:16:34 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/10 20:49:13 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/10/11 12:04:49 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,6 @@
 
 int	main()
 {
-	ClapTrap warriorA("Bob");
-	ClapTrap warriorB("Kelsa");
-	ClapTrap warriorClone = warriorA;
-
-	warriorA.attack(warriorB.getName());
-	warriorB.attack(warriorA.getName());
-	warriorClone.attack(warriorA.getName());
-
-	ScavTrap defenderA("Reinhart");
-	defenderA.attack(warriorA.getName());
-	defenderA.guardGate();
-	
-	ScavTrap defenderClone = defenderA;
-	defenderClone.guardGate();
-
 	DiamondTrap pizdec("Vam pizda");
 	pizdec.highFivesGuys();
 	
@@ -41,6 +26,7 @@ int	main()
 	std::cout << pizdec.getAttackDamage() << std::endl;
 
 	pizdec.whoAmI();
+	pizdec.attack("someone");
 
 	return(0);
 }
