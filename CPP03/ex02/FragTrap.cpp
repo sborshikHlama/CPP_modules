@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   FragTrap.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aevstign <aevsitgn@student.42prague.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 18:51:33 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/10 20:00:28 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/10/11 12:06:36 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,27 @@ FragTrap::FragTrap(const std::string& name): ClapTrap(name)
 FragTrap::~FragTrap()
 {
 	std::cout << "FragTrap destructor called" << std::endl;
+}
+
+void FragTrap::attack(const std::string& target)
+{
+	if (this->hitPoints <= 0)
+	{
+		std::cout << "ClapTrap " << this->name
+        	<< " cannot attack because it has no hit points!" << std::endl;
+        return;
+	}
+	if (this->energyPoints <= 0)
+	{
+		std::cout << "ClapTrap " << this->name
+        	<< " cannot attack because it has no energy points!" << std::endl;
+        return;
+	}
+	std::cout << "ClapTrap "<< this->name
+		<< " attacks "<< target
+		<< ", causing " << this->attackDamage
+		<< " points of damage!" << std::endl;
+	this->energyPoints--;
 }
 
 void FragTrap::highFivesGuys(void)

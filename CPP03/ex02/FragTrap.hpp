@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   FragTrap.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aevstign <aevsitgn@student.42prague.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:42:54 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/10 19:57:37 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/10/11 12:06:31 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,6 @@ class FragTrap: public ClapTrap
 public:
 	FragTrap(const std::string& name);
 	~FragTrap();
+	void attack(const std::string& target);
 	void highFivesGuys(void);
 };
