@@ -1,34 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Cat.cpp                                            :+:      :+:    :+:   */
+/*   AMateria.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/12 17:53:32 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/12 18:04:46 by aevstign         ###   ########.fr       */
+/*   Created: 2025/10/12 19:38:48 by aevstign          #+#    #+#             */
+/*   Updated: 2025/10/12 20:01:43 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cat.hpp"
+#include "AMateria.hpp"
 
-// Tries to call the default construcot of the parent
-Cat::Cat()
+AMateria::AMateria(std::string const & type): type(type)
 {
-	this->type = "Cat";
-	this->brain = new Brain();
 	if (DEBUG)
-		std::cout << "Cat constructor was called" << std::endl;
-};
-
-Cat::~Cat()
-{
-	delete this->brain;
-	if (DEBUG)
-		std::cout << "Cat destructor was called" << std::endl;
+		std::cout << "AMateria constructor was called" << std::endl;
 }
 
-void Cat::makeSound() const
+AMateria::~AMateria()
 {
-	std::cout << "Cat makes sound: Meow" << std::endl;
+	if (DEBUG)
+		std::cout << "AMateria destructor was called" << std::endl;
+}
+
+AMateria::AMateria(AMateria const & obj): type(obj.type){}
+
+AMateria& AMateria::operator=(AMateria const & rightStamp){}
+
+std::string const &AMateria::getType() const
+{
+	return (this->type);
 }

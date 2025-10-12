@@ -1,34 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Cat.cpp                                            :+:      :+:    :+:   */
+/*   Cure.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/12 17:53:32 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/12 18:04:46 by aevstign         ###   ########.fr       */
+/*   Created: 2025/10/12 19:51:57 by aevstign          #+#    #+#             */
+/*   Updated: 2025/10/12 20:07:38 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cat.hpp"
+#pragma once
+#include "AMateria.hpp"
 
-// Tries to call the default construcot of the parent
-Cat::Cat()
+class Cure: public AMateria
 {
-	this->type = "Cat";
-	this->brain = new Brain();
-	if (DEBUG)
-		std::cout << "Cat constructor was called" << std::endl;
+public:
+	Cure();
+	AMateria* clone() const override;
+	void use(ICharacter& target);
+	~Cure() override;
 };
-
-Cat::~Cat()
-{
-	delete this->brain;
-	if (DEBUG)
-		std::cout << "Cat destructor was called" << std::endl;
-}
-
-void Cat::makeSound() const
-{
-	std::cout << "Cat makes sound: Meow" << std::endl;
-}

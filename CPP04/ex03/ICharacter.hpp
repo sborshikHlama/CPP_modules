@@ -1,34 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Cat.cpp                                            :+:      :+:    :+:   */
+/*   ICharacter.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/12 17:53:32 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/12 18:04:46 by aevstign         ###   ########.fr       */
+/*   Created: 2025/10/12 19:31:09 by aevstign          #+#    #+#             */
+/*   Updated: 2025/10/12 19:33:52 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cat.hpp"
+#pragma once
 
-// Tries to call the default construcot of the parent
-Cat::Cat()
+#include <iostream>
+#include "AMateria.hpp"
+
+class ICharacter
 {
-	this->type = "Cat";
-	this->brain = new Brain();
-	if (DEBUG)
-		std::cout << "Cat constructor was called" << std::endl;
+protected:
+	ICharacter();
+public:
+	virtual ~ICharacter() {}
+	virtual std::string const & getName() const = 0;
+	virtual void equip(AMateria* m) = 0;
+	virtual void unequip(int idx) = 0;
+	virtual void use(int idx, ICharacter& target) = 0;
 };
-
-Cat::~Cat()
-{
-	delete this->brain;
-	if (DEBUG)
-		std::cout << "Cat destructor was called" << std::endl;
-}
-
-void Cat::makeSound() const
-{
-	std::cout << "Cat makes sound: Meow" << std::endl;
-}

@@ -17,7 +17,7 @@ Animal::Animal(const Animal& obj)
 Animal::~Animal()
 {
 	if (DEBUG)
-		std::cout << "Destructor was called" << std::endl;
+		std::cout << "Animal destructor was called" << std::endl;
 }
 
 Animal& Animal::operator=(const Animal& rightStamp)

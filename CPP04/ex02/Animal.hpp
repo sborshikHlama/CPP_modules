@@ -6,8 +6,8 @@ class Animal
 {
 protected:
 	std::string type;
-public:
 	Animal();
+public:
 	Animal(const Animal& obj);
 	virtual ~Animal();
 	Animal& operator=(const Animal& rightStamp);

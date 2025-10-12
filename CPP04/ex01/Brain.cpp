@@ -1,34 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Cat.cpp                                            :+:      :+:    :+:   */
+/*   Brain.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/12 17:53:32 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/12 18:04:46 by aevstign         ###   ########.fr       */
+/*   Created: 2025/10/12 17:58:17 by aevstign          #+#    #+#             */
+/*   Updated: 2025/10/12 17:59:45 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Cat.hpp"
+#include "Brain.hpp"
+#include "Animal.hpp"
 
-// Tries to call the default construcot of the parent
-Cat::Cat()
+Brain::Brain()
 {
-	this->type = "Cat";
-	this->brain = new Brain();
 	if (DEBUG)
-		std::cout << "Cat constructor was called" << std::endl;
-};
-
-Cat::~Cat()
-{
-	delete this->brain;
-	if (DEBUG)
-		std::cout << "Cat destructor was called" << std::endl;
+		std::cout << "Brain constructor was called" << std::endl;
 }
 
-void Cat::makeSound() const
+Brain::~Brain()
 {
-	std::cout << "Cat makes sound: Meow" << std::endl;
+	if (DEBUG)
+		std::cout << "Brain destructor was called" << std::endl;
 }
