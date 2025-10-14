@@ -7,14 +7,14 @@ Dog::Dog()
 	this->type = "Dog";
 	this->brain = new Brain();
 	if (DEBUG)
-		std::cout << "Dog constructor was called" << std::endl;
+		std::cout << "Dog constructor has been called" << std::endl;
 };
 
 Dog::~Dog()
 {
 	delete this->brain;
 	if (DEBUG)
-		std::cout << "Dog destructor was called" << std::endl;
+		std::cout << "Dog destructor has been called" << std::endl;
 }
 
 void Dog::makeSound() const

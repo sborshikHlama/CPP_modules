@@ -1,20 +1,48 @@
-#include "Cat.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   WrongCat.cpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/14 09:27:36 by aevstign          #+#    #+#             */
+/*   Updated: 2025/10/14 17:25:15 by aevstign         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "WrongCat.hpp"
 
 // Tries to call the default construcot of the parent
-Cat::Cat()
+WrongCat::WrongCat()
 {
-	this->type = "Cat";
+	this->type = "WrongCat";
 	if (DEBUG)
-		std::cout << "Cat constructor was called" << std::endl;
+		std::cout << "WrongCat constructor has been called" << std::endl;
 };
 
-Cat::~Cat()
+WrongCat::WrongCat(const WrongCat& obj)
 {
+	this->type = obj.type;
 	if (DEBUG)
-		std::cout << "Cat destructor was called" << std::endl;
+		std::cout << "WrongCat Copy constructor has been called" << std::endl;
 }
 
-void Cat::makeSound() const
+WrongCat::~WrongCat()
 {
-	std::cout << "Cat makes sound: Meow" << std::endl;
+	if (DEBUG)
+		std::cout << "WrongCat destructor has been called" << std::endl;
+}
+
+WrongCat& WrongCat::operator=(const WrongCat& rightStamp)
+{
+	if (this != &rightStamp)
+		this->type = rightStamp.type;
+	if (DEBUG)
+		std::cout << "WrongCat has been assigned" << std::endl;
+	return (*this);
+}
+
+void WrongCat::makeSound() const
+{
+	std::cout << "WrongCat makes sound: Meow" << std::endl;
 }
