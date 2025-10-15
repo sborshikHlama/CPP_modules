@@ -4,21 +4,22 @@
 
 int main()
 {
-	int array_length = 10;
+    // const Animal* dog = new Dog();
+    // const Animal* cat = new Cat();
 
-	Animal* animalArray[array_length];
+    // delete dog; // Is destructor correct
+    // delete cat;
 
-	for (int i = 0; i < array_length; i++)
-	{
-		if (i <= array_length / 2)
-			animalArray[i] = new Dog();
-		else
-			animalArray[i] = new Cat();
-	}
+	Dog dog1;
+    dog1.setIdea(0, "Fetch the ball!");
+    Dog dog2 = dog1;
 
-	for (int i = 0; i < array_length; i++)
-	{
-		if (animalArray[i])
-			delete animalArray[i];
-	}
+    std::cout << "Dog1 idea: " << dog1.getIdea(0) << std::endl;
+    std::cout << "Dog2 idea: " << dog2.getIdea(0) << std::endl;
+
+    dog2.setIdea(0, "Chase the cat!");
+
+    std::cout << "Dog1 idea after change: " << dog1.getIdea(0) << std::endl;
+    std::cout << "Dog2 idea after change: " << dog2.getIdea(0) << std::endl;
+
 }

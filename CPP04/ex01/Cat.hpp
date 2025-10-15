@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cat.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aevstign <aevsitgn@student.42prague.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/12 17:52:50 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/12 18:04:58 by aevstign         ###   ########.fr       */
+/*   Created: 2025/10/14 09:28:24 by aevstign          #+#    #+#             */
+/*   Updated: 2025/10/14 23:21:52 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@ private:
 	Brain* brain;
 public:
 	Cat();
+	Cat(const Cat& obj);
+	Cat& operator=(const Cat& rightStamp);
 	~Cat();
 	void makeSound() const override;
+	void setIdea(int index, std::string const & idea);
+	std::string	getIdea(int index) const;
 };

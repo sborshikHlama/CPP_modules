@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Animal.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aevstign <aevsitgn@student.42prague.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:41:18 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/14 16:44:43 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/10/14 19:22:21 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ Animal::Animal(const Animal& obj)
 {
 	this->type = obj.type;
 	if (DEBUG)
-		std::cout << "Copy constructor has been called" << std::endl;
+		std::cout << "Animal copy constructor has been called" << std::endl;
 }
 
 Animal::~Animal()

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Animal.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aevstign <aevsitgn@student.42prague.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 09:28:31 by aevstign          #+#    #+#             */
-/*   Updated: 2025/10/14 16:38:37 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/10/14 19:29:39 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ protected:
 public:
 	Animal();
 	Animal(const Animal& obj);
-	~Animal();
+	virtual ~Animal();
 	Animal& operator=(const Animal& rightStamp);
 	virtual void makeSound() const;
 	std::string getType() const;

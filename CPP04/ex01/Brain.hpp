@@ -12,5 +12,9 @@ private:
 	std::string ideas[100];
 public:
 	Brain();
+	Brain(const Brain& obj);
 	~Brain();
+	Brain& operator=(const Brain& rightStamp);
+	void setIdea(int index, std::string const & idea);
+	std::string	getIdea(int index) const;
 };
