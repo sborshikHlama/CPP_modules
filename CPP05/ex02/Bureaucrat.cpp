@@ -6,7 +6,7 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 13:35:04 by aevstign          #+#    #+#             */
-/*   Updated: 2025/11/17 16:12:03 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/11/17 16:32:02 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void Bureaucrat::incrementGrade()
 		throw Bureaucrat::GradeTooHighException();
 }
 
-void Bureaucrat::signForm(Form& form)
+void Bureaucrat::signForm(AForm& form)
 {
 	try {
 		form.beSigned(*this);

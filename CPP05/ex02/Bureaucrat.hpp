@@ -6,13 +6,13 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 13:35:00 by aevstign          #+#    #+#             */
-/*   Updated: 2025/11/17 16:24:51 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/11/17 16:31:39 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <iostream>
-#include "Form.hpp"
+#include "AForm.hpp"
 
 class Bureaucrat
 {
@@ -35,5 +35,5 @@ public:
 	const int getGrade() const;
 	void incrementGrade();
 	void decrementGrade();
-	void signForm(Form& form);
+	void signForm(AForm& form);
 };

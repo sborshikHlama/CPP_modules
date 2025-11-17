@@ -6,14 +6,20 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:22:16 by aevstign          #+#    #+#             */
-/*   Updated: 2025/11/17 16:23:05 by aevstign         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:08:36 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include "Form.hpp"
+#include "AForm.hpp"
 
-class PresidentialPardonForm:Form
+class PresidentialPardonForm: public AForm
 {
-
+private:
+	const std::string target;
+public:
+	PresidentialPardonForm();
+	PresidentialPardonForm(const std::string& target);
+	void	beSigned(const Bureaucrat& obj) override;
+	void	execute(const Bureaucrat& executor) override;
 };

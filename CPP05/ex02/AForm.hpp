@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Form.hpp                                           :+:      :+:    :+:   */
+/*   AForm.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -15,7 +15,7 @@
 
 class Bureaucrat;
 
-class Form
+class AForm
 {
 private:
 	const std::string name;
@@ -31,13 +31,15 @@ public:
 	public:
 		const char* what() const noexcept override;
 	};
-	Form(const std::string name, const int gradeExecute, const int gradeSign);
-	Form(const Form& obj);
-	void	beSigned(const Bureaucrat& obj);
+	AForm(const std::string name, const int gradeSign, const int gradeExecute);
+	AForm(const AForm& obj);
+	virtual void	beSigned(const Bureaucrat& obj);
+	virtual void	execute(const Bureaucrat& executor);
 	int		getGradeSign() const;
 	int		getGradeExecute() const;
 	const	std::string getName() const;
 	bool	getIsSigned() const;
-	~Form();
+	void	setIsSigned(bool value);
+	virtual ~AForm();
 };
-std::ostream& operator<<(std::ostream &os, const Form &f);
+std::ostream& operator<<(std::ostream &os, const AForm &f);
