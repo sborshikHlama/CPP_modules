@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Form.hpp                                           :+:      :+:    :+:   */
+/*   Bureaucrat.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/17 13:34:51 by aevstign          #+#    #+#             */
-/*   Updated: 2025/11/17 16:08:42 by aevstign         ###   ########.fr       */
+/*   Created: 2025/11/17 13:35:00 by aevstign          #+#    #+#             */
+/*   Updated: 2025/11/17 16:24:51 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <iostream>
+#include "Form.hpp"
 
-class Bureaucrat;
-
-class Form
+class Bureaucrat
 {
 private:
 	const std::string name;
-	bool isSigned;
-	const int gradeSign;
-	const int gradeExecute;
+	int grade;
 public:
 	class GradeTooHighException: public std::exception {
 	public:
@@ -31,13 +28,12 @@ public:
 	public:
 		const char* what() const noexcept override;
 	};
-	Form(const std::string name, const int gradeExecute, const int gradeSign);
-	Form(const Form& obj);
-	void	beSigned(const Bureaucrat& obj);
-	int		getGradeSign() const;
-	int		getGradeExecute() const;
-	const	std::string getName() const;
-	bool	getIsSigned() const;
-	~Form();
+	Bureaucrat(const std::string name, const int grade);
+	~Bureaucrat();
+	Bureaucrat(const Bureaucrat &obj);
+	const std::string getName() const;
+	const int getGrade() const;
+	void incrementGrade();
+	void decrementGrade();
+	void signForm(Form& form);
 };
-std::ostream& operator<<(std::ostream &os, const Form &f);

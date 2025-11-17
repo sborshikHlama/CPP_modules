@@ -1,28 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   ShrubberyCreationForm.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/17 13:35:14 by aevstign          #+#    #+#             */
-/*   Updated: 2025/11/17 16:10:37 by aevstign         ###   ########.fr       */
+/*   Created: 2025/11/17 16:15:09 by aevstign          #+#    #+#             */
+/*   Updated: 2025/11/17 16:18:05 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Bureaucrat.hpp"
-
-int main(void)
-{
-	try 
-	{
-		Bureaucrat lipavsky = Bureaucrat("Jan", 20);
-		Form	f = Form("build a road", 13, 15);
-		lipavsky.signForm(f);
-		std::cout << f << std::endl;
-	} 
-	catch(std::exception& e)
-	{
-		std::cout << e.what() << std::endl;
-	}
-}
+#include "ShrubberyCreationForm.hpp"

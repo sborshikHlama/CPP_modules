@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Bureaucrat.hpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/17 15:45:49 by aevstign          #+#    #+#             */
+/*   Updated: 2025/11/17 15:51:09 by aevstign         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
 #include <iostream>
 
@@ -23,3 +35,5 @@ public:
 	void incrementGrade();
 	void decrementGrade();
 };
+
+std::ostream& operator<<(std::ostream &os, const Bureaucrat &obj);
