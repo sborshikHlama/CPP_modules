@@ -11,29 +11,30 @@
 /* ************************************************************************** */
 
 #pragma once
-#include <iostream>
 #include "AForm.hpp"
+#include <iostream>
 
-class Bureaucrat
-{
+class Bureaucrat {
 private:
-	const std::string name;
-	int grade;
+  const std::string name;
+  int grade;
+
 public:
-	class GradeTooHighException: public std::exception {
-	public:
-		const char* what() const noexcept override;
-	};
-	class GradeTooLowException: public std::exception {
-	public:
-		const char* what() const noexcept override;
-	};
-	Bureaucrat(const std::string name, const int grade);
-	~Bureaucrat();
-	Bureaucrat(const Bureaucrat &obj);
-	const std::string getName() const;
-	const int getGrade() const;
-	void incrementGrade();
-	void decrementGrade();
-	void signForm(AForm& form);
+  class GradeTooHighException : public std::exception {
+  public:
+    const char *what() const noexcept override;
+  };
+  class GradeTooLowException : public std::exception {
+  public:
+    const char *what() const noexcept override;
+  };
+  Bureaucrat(const std::string name, const int grade);
+  ~Bureaucrat();
+  Bureaucrat(const Bureaucrat &obj);
+  const std::string getName() const;
+  const int getGrade() const;
+  void incrementGrade();
+  void decrementGrade();
+  void signForm(AForm &form);
+  void executeForm(AForm &form);
 };

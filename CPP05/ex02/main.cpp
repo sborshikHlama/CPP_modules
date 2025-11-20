@@ -11,18 +11,17 @@
 /* ************************************************************************** */
 
 #include "Bureaucrat.hpp"
+#include "PresidentialPardonForm.hpp"
+#include "RobotomyRequestForm.hpp"
+#include "ShrubberyCreationForm.hpp"
 
-int main(void)
-{
-	try 
-	{
-		Bureaucrat lipavsky = Bureaucrat("Jan", 20);
-		AForm	f = AForm("build a road", 13, 15);
-		lipavsky.signForm(f);
-		std::cout << f << std::endl;
-	} 
-	catch(std::exception& e)
-	{
-		std::cout << e.what() << std::endl;
-	}
+int main(void) {
+  try {
+    Bureaucrat b("MisterN", 1);
+    PresidentialPardonForm pf("Ivan Zolo");
+    b.signForm(pf);
+    b.executeForm(pf);
+  } catch (std::exception &e) {
+    std::cout << e.what() << std::endl;
+  }
 }

@@ -17,6 +17,8 @@
 ShrubberyCreationForm::ShrubberyCreationForm(const std::string &target)
     : AForm("ShrubberyCreationForm", 145, 137), target(target) {};
 
+ShrubberyCreationForm::~ShrubberyCreationForm() {};
+
 void ShrubberyCreationForm::beSigned(const Bureaucrat &obj) {
   if (obj.getGrade() <= this->getGradeSign())
     this->setIsSigned(true);

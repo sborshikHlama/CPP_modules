@@ -16,6 +16,8 @@
 RobotomyRequestForm::RobotomyRequestForm(const std::string &target)
     : AForm("RobotomyRequestForm", 72, 45), target(target) {};
 
+RobotomyRequestForm::~RobotomyRequestForm() {};
+
 void RobotomyRequestForm::beSigned(const Bureaucrat &obj) {
   if (obj.getGrade() <= this->getGradeSign())
     this->setIsSigned(true);

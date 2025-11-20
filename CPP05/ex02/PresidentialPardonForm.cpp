@@ -16,6 +16,8 @@
 PresidentialPardonForm::PresidentialPardonForm(const std::string &target)
     : AForm("PresidentialPardonForm", 25, 5), target(target) {};
 
+PresidentialPardonForm::~PresidentialPardonForm() {};
+
 void PresidentialPardonForm::beSigned(const Bureaucrat &b) {
   if (b.getGrade() <= this->getGradeSign())
     this->setIsSigned(true);
