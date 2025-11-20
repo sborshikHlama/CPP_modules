@@ -11,3 +11,24 @@
 /* ************************************************************************** */
 
 #include "RobotomyRequestForm.hpp"
+#include "Bureaucrat.hpp"
+
+RobotomyRequestForm::RobotomyRequestForm(const std::string &target)
+    : AForm("RobotomyRequestForm", 72, 45), target(target) {};
+
+void RobotomyRequestForm::beSigned(const Bureaucrat &obj) {
+  if (obj.getGrade() <= this->getGradeSign())
+    this->setIsSigned(true);
+  else
+    throw RobotomyRequestForm::GradeTooLowException();
+}
+
+void RobotomyRequestForm::execute(const Bureaucrat &executor) {
+  if (this->getIsSigned() && executor.getGrade() <= this->getGradeExecute()) {
+    std::cout << "Brrrrr, " << this->target
+              << " has been robotomized successfully 50% of the time."
+              << std::endl;
+  } else {
+    std::cout << "robotomy failed" << std::endl;
+  }
+}

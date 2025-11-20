@@ -20,6 +20,7 @@ private:
 public:
 	PresidentialPardonForm();
 	PresidentialPardonForm(const std::string& target);
+	~PresidentialPardonForm();
 	void	beSigned(const Bureaucrat& obj) override;
 	void	execute(const Bureaucrat& executor) override;
 };

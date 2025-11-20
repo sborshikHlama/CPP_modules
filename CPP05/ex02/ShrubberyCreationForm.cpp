@@ -11,3 +11,34 @@
 /* ************************************************************************** */
 
 #include "ShrubberyCreationForm.hpp"
+#include "Bureaucrat.hpp"
+#include <fstream>
+
+ShrubberyCreationForm::ShrubberyCreationForm(const std::string &target)
+    : AForm("ShrubberyCreationForm", 145, 137), target(target) {};
+
+void ShrubberyCreationForm::beSigned(const Bureaucrat &obj) {
+  if (obj.getGrade() <= this->getGradeSign())
+    this->setIsSigned(true);
+  else
+    throw ShrubberyCreationForm::GradeTooLowException();
+}
+
+void ShrubberyCreationForm::execute(const Bureaucrat &executor) {
+  std::string filename;
+
+  filename = this->target + "_shrubbery";
+  if (this->getIsSigned() && executor.getGrade() <= this->getGradeExecute()) {
+    std::ofstream ofs(filename.c_str());
+    ofs << R"(       _-_ 
+        /~~   ~~\
+     /~~         ~~\
+    {               }
+     \  _-     -_  /
+       ~  \\ //  ~
+     - -   | | _- _
+      _ -  | |   -_
+          // \\
+    )";
+  }
+}

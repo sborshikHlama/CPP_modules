@@ -12,8 +12,16 @@
 
 #pragma once
 #include "AForm.hpp"
+#include "Bureaucrat.hpp"
 
-class RobotomyRequestForm:AForm
-{
-	
+class RobotomyRequestForm : AForm {
+private:
+  const std::string &target;
+
+public:
+  RobotomyRequestForm();
+  RobotomyRequestForm(const std::string &target);
+  ~RobotomyRequestForm();
+  void beSigned(const Bureaucrat &obj) override;
+  void execute(const Bureaucrat &executor) override;
 };

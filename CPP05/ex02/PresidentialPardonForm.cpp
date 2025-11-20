@@ -13,22 +13,22 @@
 #include "PresidentialPardonForm.hpp"
 #include "Bureaucrat.hpp"
 
-PresidentialPardonForm::PresidentialPardonForm(const std::string& target):
-	AForm("PresidentialPardonForm", 25, 5), target(target)
-{};
+PresidentialPardonForm::PresidentialPardonForm(const std::string &target)
+    : AForm("PresidentialPardonForm", 25, 5), target(target) {};
 
-void PresidentialPardonForm::beSigned(const Bureaucrat& b)
-{
-	if (b.getGrade() <= this->getGradeSign())
-	{
-		this->setIsSigned(true);
-		std::cout << this->target << " has been pardoned by Zaphod Beeblebrox" << std::endl;
-	}
-	else
-		throw AForm::GradeTooLowException();
+void PresidentialPardonForm::beSigned(const Bureaucrat &b) {
+  if (b.getGrade() <= this->getGradeSign())
+    this->setIsSigned(true);
+  else
+    throw PresidentialPardonForm::GradeTooLowException();
 }
 
-void PresidentialPardonForm::execute(const Bureaucrat& executor)
-{
+void PresidentialPardonForm::execute(const Bureaucrat &executor) {
+  if (executor.getGrade() <= this->getGradeExecute() && this->getGradeSign()) {
 
+    std::cout << this->target << " has been pardoned by Zaphod Beeblebrox"
+              << std::endl;
+  } else {
+    throw PresidentialPardonForm::GradeTooLowException();
+  }
 };
