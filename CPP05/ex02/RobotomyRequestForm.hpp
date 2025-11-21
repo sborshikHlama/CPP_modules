@@ -13,12 +13,17 @@
 #pragma once
 #include "AForm.hpp"
 #include "Bureaucrat.hpp"
+#include <exception>
 
-class RobotomyRequestForm : AForm {
+class RobotomyRequestForm : public AForm {
 private:
   const std::string &target;
 
 public:
+  class RobotomyFailedException : public std::exception {
+  public:
+    const char *what() const noexcept override;
+  };
   RobotomyRequestForm();
   RobotomyRequestForm(const std::string &target);
   ~RobotomyRequestForm();

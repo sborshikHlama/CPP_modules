@@ -13,7 +13,7 @@
 #pragma once
 #include "AForm.hpp"
 
-class ShrubberyCreationForm : AForm {
+class ShrubberyCreationForm : public AForm {
 private:
   const std::string target;
 

@@ -21,6 +21,22 @@ int main(void) {
     PresidentialPardonForm pf("Ivan Zolo");
     b.signForm(pf);
     b.executeForm(pf);
+
+    Bureaucrat a("MisterM", 3);
+    ShrubberyCreationForm sf("Anton");
+    a.signForm(sf);
+    a.executeForm(sf);
+
+    Bureaucrat c("MisterC", 4);
+    RobotomyRequestForm rf("Robot");
+    c.signForm(rf);
+    c.executeForm(rf);
+
+    Bureaucrat d("MisterD", 149);
+    RobotomyRequestForm rf2("Robot2");
+    d.signForm(rf2);
+    d.executeForm(rf2);
+
   } catch (std::exception &e) {
     std::cout << e.what() << std::endl;
   }

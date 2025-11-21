@@ -25,12 +25,23 @@ void RobotomyRequestForm::beSigned(const Bureaucrat &obj) {
     throw RobotomyRequestForm::GradeTooLowException();
 }
 
+const char *
+RobotomyRequestForm::RobotomyFailedException::what() const noexcept {
+  return ("robotomy failed");
+}
+
 void RobotomyRequestForm::execute(const Bureaucrat &executor) {
-  if (this->getIsSigned() && executor.getGrade() <= this->getGradeExecute()) {
+  if (!this->getIsSigned()) {
+    std::cout << "robotomy failed" << std::endl;
+    throw RobotomyRequestForm::FormNotSignedException();
+  }
+  if (executor.getGrade() <= this->getGradeExecute()) {
     std::cout << "Brrrrr, " << this->target
               << " has been robotomized successfully 50% of the time."
               << std::endl;
   } else {
-    std::cout << "robotomy failed" << std::endl;
+    std::cout << this->getIsSigned() << std::endl;
+    std::cout << "here" << std::endl;
+    throw RobotomyRequestForm::GradeTooLowException();
   }
 }
