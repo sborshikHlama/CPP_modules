@@ -10,34 +10,40 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#ifndef FORM_HPP
+#define FORM_HPP
 #include <iostream>
+#include <string>
 
 class Bureaucrat;
 
-class Form
-{
+class Form {
 private:
-	const std::string name;
-	bool isSigned;
-	const int gradeSign;
-	const int gradeExecute;
+  const std::string name;
+  bool isSigned;
+  const int gradeSign;
+  const int gradeExecute;
+
 public:
-	class GradeTooHighException: public std::exception {
-	public:
-		const char* what() const noexcept override;
-	};
-	class GradeTooLowException: public std::exception {
-	public:
-		const char* what() const noexcept override;
-	};
-	Form(const std::string name, const int gradeExecute, const int gradeSign);
-	Form(const Form& obj);
-	void	beSigned(const Bureaucrat& obj);
-	int		getGradeSign() const;
-	int		getGradeExecute() const;
-	const	std::string getName() const;
-	bool	getIsSigned() const;
-	~Form();
+  class GradeTooHighException : public std::exception {
+  public:
+    virtual const char *what() const throw();
+  };
+  class GradeTooLowException : public std::exception {
+  public:
+    virtual const char *what() const throw();
+  };
+  Form();
+  Form(const std::string &name, int gradeExecute, int gradeSign);
+  Form(const Form &obj);
+  Form &operator=(const Form &obj);
+  ~Form();
+  void beSigned(const Bureaucrat &obj);
+  int getGradeSign() const;
+  int getGradeExecute() const;
+  const std::string getName() const;
+  bool getIsSigned() const;
 };
-std::ostream& operator<<(std::ostream &os, const Form &f);
+std::ostream &operator<<(std::ostream &os, const Form &f);
+
+#endif
