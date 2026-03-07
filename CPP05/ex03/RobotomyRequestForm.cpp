@@ -33,10 +33,6 @@ RobotomyRequestForm::operator=(const RobotomyRequestForm &obj) {
   return (*this);
 }
 
-const char *RobotomyRequestForm::RobotomyFailedException::what() const throw() {
-  return ("robotomy failed");
-}
-
 void RobotomyRequestForm::executeAction() const {
   std::cout << "* intense drilling noises *" << std::endl;
   if (std::rand() % 2) {

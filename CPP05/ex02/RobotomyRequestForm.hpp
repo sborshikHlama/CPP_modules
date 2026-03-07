@@ -20,10 +20,6 @@ private:
   const std::string target;
 
 public:
-  class RobotomyFailedException : public std::exception {
-  public:
-    const char *what() const throw();
-  };
   RobotomyRequestForm();
   RobotomyRequestForm(const std::string &target);
   RobotomyRequestForm(const RobotomyRequestForm &obj);
