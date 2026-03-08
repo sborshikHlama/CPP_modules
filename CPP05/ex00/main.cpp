@@ -12,15 +12,13 @@
 
 #include "Bureaucrat.hpp"
 
-int main(void)
-{
-	try 
-	{
-		Bureaucrat b = Bureaucrat("Jan Lipavsky", 160);
-		std::cout << b << std::endl;
-	} 
-	catch(Bureaucrat::GradeTooLowException& e)
-	{
-		std::cout << e.what() << std::endl;
-	}
+int main(void) {
+  try {
+    Bureaucrat b = Bureaucrat("Jan Lipavsky", 0);
+    std::cout << b << std::endl;
+  } catch (Bureaucrat::GradeTooHighException &e) {
+    std::cout << "Caught high: " << e.what() << std::endl;
+  } catch (Bureaucrat::GradeTooLowException &e) {
+    std::cout << "Caught low: " << e.what() << std::endl;
+  }
 }
