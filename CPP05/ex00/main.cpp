@@ -14,7 +14,7 @@
 
 int main(void) {
   try {
-    Bureaucrat b = Bureaucrat("Jan Lipavsky", 0);
+    Bureaucrat b = Bureaucrat("B1", 0);
     std::cout << b << std::endl;
   } catch (Bureaucrat::GradeTooHighException &e) {
     std::cout << "Caught high: " << e.what() << std::endl;

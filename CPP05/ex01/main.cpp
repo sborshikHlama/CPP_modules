@@ -12,17 +12,13 @@
 
 #include "Bureaucrat.hpp"
 
-int main(void)
-{
-	try 
-	{
-		Bureaucrat lipavsky = Bureaucrat("Jan", 20);
-		Form	f = Form("build a road", 13, 15);
-		lipavsky.signForm(f);
-		std::cout << f << std::endl;
-	} 
-	catch(std::exception& e)
-	{
-		std::cout << e.what() << std::endl;
-	}
+int main(void) {
+  try {
+    Bureaucrat b = Bureaucrat("B1", 20);
+    Form f = Form("build a road", 13, 15);
+    b.signForm(f);
+    std::cout << f << std::endl;
+  } catch (std::exception &e) {
+    std::cout << e.what() << std::endl;
+  }
 }
