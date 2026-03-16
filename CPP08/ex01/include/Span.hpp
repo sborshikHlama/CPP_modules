@@ -5,7 +5,7 @@
 
 class Span {
 private:
-  unsigned int _size();
+  unsigned int _size;
   std::vector<int> _storage;
   Span();
 
@@ -14,6 +14,7 @@ public:
   Span(const Span &other);
   Span &operator=(const Span &other);
   void addNumber(int n);
+  int shortestSpan();
   int longestSpan();
   ~Span();
 };
