@@ -1,3 +1,6 @@
+#ifndef MUTANTSTACK_HPP
+#define MUTANTSTACK_HPP
+
 #include <stack>
 
 template <typename T> class MutantStack : public std::stack<T> {
@@ -16,5 +19,6 @@ public:
   iterator end() { return this->c.end(); }
   const_iterator begin() const { return this->c.begin(); }
   const_iterator end() const { return this->c.end(); }
-  
 };
+
+#endif

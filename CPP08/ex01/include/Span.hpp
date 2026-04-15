@@ -1,6 +1,9 @@
 #ifndef SPAN_HPP
 #define SPAN_HPP
 
+#include <algorithm>
+#include <exception>
+#include <iterator>
 #include <vector>
 
 class Span {
@@ -13,10 +16,23 @@ public:
   Span(unsigned int n);
   Span(const Span &other);
   Span &operator=(const Span &other);
-  void addNumber(int n);
-  int shortestSpan();
-  int longestSpan();
   ~Span();
+
+  void addNumber(int n);
+  template <typename InputIterator>
+  void addNumber(InputIterator first, InputIterator last) {
+    typename std::iterator_traits<InputIterator>::difference_type count =
+        std::distance(first, last);
+
+    if (count < 0 ||
+        _storage.size() + static_cast<std::size_t>(count) > _size) {
+      throw std::exception();
+    }
+    _storage.insert(_storage.end(), first, last);
+  }
+
+  int shortestSpan() const;
+  int longestSpan() const;
 };
 
 #endif

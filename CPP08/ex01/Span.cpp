@@ -2,7 +2,21 @@
 #include <algorithm>
 #include <numeric>
 
+Span::Span() : _size(0) {}
+
 Span::Span(unsigned int n) : _size(n) {}
+
+Span::Span(const Span &other) : _size(other._size), _storage(other._storage) {}
+
+Span &Span::operator=(const Span &other) {
+  if (this != &other) {
+    _size = other._size;
+    _storage = other._storage;
+  }
+  return *this;
+}
+
+Span::~Span() {}
 
 void Span::addNumber(int n) {
   if (this->_storage.size() >= this->_size) {
@@ -11,7 +25,7 @@ void Span::addNumber(int n) {
   this->_storage.push_back(n);
 }
 
-int Span::shortestSpan() {
+int Span::shortestSpan() const {
   if (_storage.size() < 2) {
     throw std::exception();
   }
@@ -23,7 +37,7 @@ int Span::shortestSpan() {
   return (min);
 }
 
-int Span::longestSpan() {
+int Span::longestSpan() const {
   if (_storage.size() < 2) {
     throw std::exception();
   }

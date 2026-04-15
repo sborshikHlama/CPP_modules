@@ -1,5 +1,5 @@
-NAME = mutantstack
-SRCS = main.cpp
+NAME = span
+SRCS = main.cpp Span.cpp
 OBJ_DIR = obj
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.cpp=.o))
 CC = c++
@@ -10,7 +10,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(CPPFLAGS) $(OBJS) -o $(NAME)
 
-$(OBJ_DIR)/%.o:%.cpp
+$(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CPPFLAGS) -c $< -o $@
 

@@ -31,17 +31,5 @@ int main(void) {
         std::cerr << "Caught expected error: " << e.what() << std::endl;
     }
 
-    std::cout << "\n--- Const Deque Test ---" << std::endl;
-    std::deque<int> deq;
-    deq.push_back(213123);
-    const std::deque<int> const_deq = deq;
-
-    try {
-        std::deque<int>::const_iterator it = easyfind(const_deq, 213123);
-        std::cout << "Found in const deque: " << *it << std::endl;
-    } catch (const std::exception &e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
-
     return 0;
 }

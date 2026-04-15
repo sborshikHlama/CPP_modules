@@ -36,10 +36,7 @@ int main() {
     for (int i = 0; i < 10000; i++) {
         v.push_back(i * 2);
     }
-    // Note: addNumber(iter, iter) would be better, but let's test addNumber individually first
-    for (size_t i = 0; i < v.size(); i++) {
-        sp2.addNumber(v[i]);
-    }
+    sp2.addNumber(v.begin(), v.end());
     std::cout << "Shortest span (10k): " << sp2.shortestSpan() << " (Expected: 2)" << std::endl;
     std::cout << "Longest span (10k): " << sp2.longestSpan() << " (Expected: 19998)" << std::endl;
 
