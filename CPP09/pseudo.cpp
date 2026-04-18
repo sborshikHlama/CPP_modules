@@ -6,7 +6,7 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 15:58:58 by aevstign          #+#    #+#             */
-/*   Updated: 2026/04/18 16:48:18 by aevstign         ###   ########.fr       */
+/*   Updated: 2026/04/18 17:16:21 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,17 @@ bool	isValidDate(std::string &year, std::string &month, std::string &day)
 
 	year_int = atoi(year.c_str());
 	month_int = atoi(month.c_str());
-	day_int = atoi(day.substr(6, 8).c_str());
+	day_int = atoi(day.c_str());
 
 	if (month_int < 1 || month_int > 12)
 		return (false);
 	if (day_int < 1 || day_int > 31)
 		return (false);
+	if ((year_int % 4 == 0) && (year_int % 100 == 0) && (year_int % 400) == 0)
+	{
+		if (month_int == 2 && day_int > 29)
+			return (false);
+	}
 
 	return (true);
 }
@@ -54,7 +59,7 @@ bool	parseDate(std::string &line)
 		return (false);
 	}
 
-	if ((line.substr(4, 5) != "-") || (line.substr(7, 8) != "-"))
+	if ((line[4] != '-') || (line[7] != '-'))
 	{
 		return false;
 	}
@@ -67,6 +72,8 @@ bool	parseDate(std::string &line)
 	if (!isAllDigits(month))
 		return (false);
 	if (!isAllDigits(day))
+		return (false);
+	if (!isValidDate(year, month, day))
 		return (false);
 
 	return (true);
