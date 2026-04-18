@@ -6,7 +6,7 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 15:58:58 by aevstign          #+#    #+#             */
-/*   Updated: 2026/04/18 17:16:21 by aevstign         ###   ########.fr       */
+/*   Updated: 2026/04/18 17:27:11 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,25 @@ bool	isValidDate(std::string &year, std::string &month, std::string &day)
 
 	if (month_int < 1 || month_int > 12)
 		return (false);
-	if (day_int < 1 || day_int > 31)
-		return (false);
-	if ((year_int % 4 == 0) && (year_int % 100 == 0) && (year_int % 400) == 0)
+	if (month_int == 2)
 	{
-		if (month_int == 2 && day_int > 29)
+		if ((year_int % 4 == 0) && (year_int % 100 == 0) && (year_int % 400) == 0)
+		{
+			if (day_int < 1 || day_int > 29)
+				return (false);
+		} else {
+			if (day_int < 1 || day_int > 28)
+				return (false);
+		}
+	}
+	else if (month_int == 4 || month_int == 6 || month_int == 9 || month_int == 11)
+	{
+		if (day_int < 1 || day_int > 30)
+			return (false);
+	}
+	else
+	{
+		if (day_int < 1 || day_int > 31)
 			return (false);
 	}
 
