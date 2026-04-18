@@ -6,7 +6,7 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 15:58:58 by aevstign          #+#    #+#             */
-/*   Updated: 2026/04/18 16:35:24 by aevstign         ###   ########.fr       */
+/*   Updated: 2026/04/18 16:48:18 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,29 @@
 #include <fstream>
 #include <string>
 
-bool	isValidDate(std::string &line)
+bool	isValidDate(std::string &year, std::string &month, std::string &day)
 {
-	int year;
-	int month;
-	int day;
+	int year_int;
+	int month_int;
+	int day_int;
 
-	year = atoi(line.substr(0, 4).c_str());
-	month = atoi(line.substr(4, 6).c_str());
-	day = atoi(line.substr(6, 8).c_str());
+	year_int = atoi(year.c_str());
+	month_int = atoi(month.c_str());
+	day_int = atoi(day.substr(6, 8).c_str());
 
-	if (month < 1 || month > 12)
+	if (month_int < 1 || month_int > 12)
 		return (false);
-	if (day < 1 || day > 31)
+	if (day_int < 1 || day_int > 31)
 		return (false);
 
 	return (true);
 }
 
-bool	isDigit(std::string &substring)
+bool	isAllDigits(std::string &substring)
 {
 	for (size_t i = 0; i < substring.length(); i++)
 	{
-		if (!isdigit(substring[i]))
+		if (!std::isdigit(substring[i]))
 			return (false);
 	}
 	return (true);
@@ -53,19 +53,20 @@ bool	parseDate(std::string &line)
 	{
 		return (false);
 	}
+
 	if ((line.substr(4, 5) != "-") || (line.substr(7, 8) != "-"))
 	{
 		return false;
 	}
 	
 	year = line.substr(0, 4);
-	month = line.substr(5, 7);
-	day = line.substr(8, 10);
-	if (!isDigit(year))
+	month = line.substr(5, 2);
+	day = line.substr(8, 2);
+	if (!isAllDigits(year))
 		return (false);
-	if (!isDigit(month))
+	if (!isAllDigits(month))
 		return (false);
-	if (!isDigit(day))
+	if (!isAllDigits(day))
 		return (false);
 
 	return (true);
