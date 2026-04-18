@@ -6,7 +6,7 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 15:58:58 by aevstign          #+#    #+#             */
-/*   Updated: 2026/04/18 17:49:35 by aevstign         ###   ########.fr       */
+/*   Updated: 2026/04/18 18:24:24 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <algorithm>
 
 bool	isValidDate(const std::string &year, const std::string &month, const std::string &day)
 {
@@ -60,7 +61,7 @@ bool	isAllDigits(const std::string &substring)
 	return (true);
 }
 
-bool	parseDate(const std::string &line)
+bool	checkDate(const std::string &line)
 {
 	std::string year;
 	std::string month;
@@ -91,10 +92,22 @@ bool	parseDate(const std::string &line)
 	return (true);
 }
 
+bool	checkPrice(const std::string &price)
+{
+	if (price.empty())
+		return (false);
+	
+}
+
+
+
 int main(int argc, char **argv)
 {
 	std::string filepath;
 	std::string line;
+	std::string::iterator splitPos;
+	std::string date;
+	std::string price;
 
 	if (argc < 2)
 	{
@@ -117,8 +130,21 @@ int main(int argc, char **argv)
 	}
 	
 	std::getline(file, line);
-	while (std::getline(file, line)) {
-
+	while (std::getline(file, line))
+	{
+		splitPos = std::find(line.begin(), line.end(), '|');
+		if (splitPos == line.end())
+		{
+			std::cout << "Error: bad input => " << line << std::endl;
+			continue;
+		}
+		date = line.substr(0, splitPos - line.begin());
+		if (!checkDate(date))
+		{
+			std::cout << "Error: bad input => " << line << std::endl;
+			continue;
+		}
+		price = line.substr(splitPos - line.begin() + 1);
 	}
 
 	return (0);
