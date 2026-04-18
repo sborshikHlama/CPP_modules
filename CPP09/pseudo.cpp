@@ -6,7 +6,7 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 15:58:58 by aevstign          #+#    #+#             */
-/*   Updated: 2026/04/18 17:48:15 by aevstign         ###   ########.fr       */
+/*   Updated: 2026/04/18 17:49:35 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ bool	isValidDate(const std::string &year, const std::string &month, const std::s
 		return (false);
 	if (month_int == 2)
 	{
-		if (year_int % 4 == 0)
+		if (year_int % 400 == 0)
 			maxDays = 29;
 		else if (year_int % 100 == 0)
 			maxDays = 28;
-		else if (year_int % 400 == 0)
+		else if (year_int % 4 == 0)
 			maxDays = 29;
 		else
 			maxDays = 28;
