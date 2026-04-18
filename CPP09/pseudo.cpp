@@ -6,7 +6,7 @@
 /*   By: aevstign <aevstign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/18 15:58:58 by aevstign          #+#    #+#             */
-/*   Updated: 2026/04/18 17:27:11 by aevstign         ###   ########.fr       */
+/*   Updated: 2026/04/18 17:48:15 by aevstign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,12 @@
 #include <fstream>
 #include <string>
 
-bool	isValidDate(std::string &year, std::string &month, std::string &day)
+bool	isValidDate(const std::string &year, const std::string &month, const std::string &day)
 {
 	int year_int;
 	int month_int;
 	int day_int;
+	int maxDays;
 
 	year_int = atoi(year.c_str());
 	month_int = atoi(month.c_str());
@@ -29,30 +30,27 @@ bool	isValidDate(std::string &year, std::string &month, std::string &day)
 		return (false);
 	if (month_int == 2)
 	{
-		if ((year_int % 4 == 0) && (year_int % 100 == 0) && (year_int % 400) == 0)
-		{
-			if (day_int < 1 || day_int > 29)
-				return (false);
-		} else {
-			if (day_int < 1 || day_int > 28)
-				return (false);
-		}
+		if (year_int % 4 == 0)
+			maxDays = 29;
+		else if (year_int % 100 == 0)
+			maxDays = 28;
+		else if (year_int % 400 == 0)
+			maxDays = 29;
+		else
+			maxDays = 28;
 	}
 	else if (month_int == 4 || month_int == 6 || month_int == 9 || month_int == 11)
-	{
-		if (day_int < 1 || day_int > 30)
-			return (false);
-	}
+		maxDays = 30;
 	else
-	{
-		if (day_int < 1 || day_int > 31)
-			return (false);
-	}
+		maxDays = 31;
+
+	if (day_int < 1 || day_int > maxDays)
+		return (false);
 
 	return (true);
 }
 
-bool	isAllDigits(std::string &substring)
+bool	isAllDigits(const std::string &substring)
 {
 	for (size_t i = 0; i < substring.length(); i++)
 	{
@@ -62,7 +60,7 @@ bool	isAllDigits(std::string &substring)
 	return (true);
 }
 
-bool	parseDate(std::string &line)
+bool	parseDate(const std::string &line)
 {
 	std::string year;
 	std::string month;
