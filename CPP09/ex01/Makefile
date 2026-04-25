@@ -23,4 +23,16 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+test: all
+	@echo "--- Valid Case 1 ---"
+	./$(NAME) "8 9 * 9 - 9 - 4 - 1 +"
+	@echo "\n--- Valid Case 2 ---"
+	./$(NAME) "7 7 * 7 -"
+	@echo "\n--- Valid Case 3 ---"
+	./$(NAME) "1 2 * 2 / 2 * 5 2 * 1 + - 1 2 * +"
+	@echo "\n--- Error Case (Empty) ---"
+	-./$(NAME) ""
+	@echo "\n--- Error Case (Div by Zero) ---"
+	-./$(NAME) "1 0 /"
+
+.PHONY: all clean fclean re test
