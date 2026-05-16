@@ -105,10 +105,11 @@ void BitcoinExchange::loadDB(const std::string &filename) {
         if (commaPos != std::string::npos) {
             std::string date = _trim(line.substr(0, commaPos));
             std::string rateStr = _trim(line.substr(commaPos + 1));
-            if (_checkDate(date)) {
+            if (_checkDate(date) && _checkPrice(rateStr)) {
                 double rate = 0.0;
                 std::istringstream(rateStr) >> rate;
-                this->_db[date] = rate;
+                if (rate >= 0)
+                    this->_db[date] = rate;
             }
         }
     }
