@@ -4,21 +4,21 @@
 #include <iomanip>
 #include <algorithm>
 #include <cstdlib>
-#include <ctime>
+#include <sys/time.h>
+#include <cmath>
 
-// This implementation treats the input container as a flattened array of
-// fixed-size blocks. Each block contains pairLevel elements and is represented
-// by its last element, called the "winner". The Ford-Johnson process works
-// on these blocks without splitting them:
-//   - adjacent blocks are paired and compared by their winners
-//   - if a pair is out of order, the entire blocks are swapped
-//   - pairs become meta-blocks of size 2 * pairLevel for the next recursion
-//   - a main chain is built from the first loser block and all winner blocks
-//   - remaining loser blocks and any stray block are inserted in Jacobsthal
-//     order by comparing block winners and shifting whole blocks
-// This flattening allows the algorithm to use index arithmetic like
-//   2 * p * pairLevel
-// and operate on blocks as contiguous ranges inside the flat array.
+static int g_comparisons = 0;
+
+struct IntComp {
+    bool operator()(int a, int b) const { ++g_comparisons; return a < b; }
+};
+
+static int maxComparisons(int n) {
+    int sum = 0;
+    for (int k = 1; k <= n; ++k)
+        sum += static_cast<int>(ceil(log2(3.0 * k / 2.0)));
+    return sum;
+}
 
 // Returns 0-indexed pend positions to insert in Jacobsthal order (high to low
 // within each group), ensuring every binary search range is 2^k-1 elements.
@@ -36,34 +36,36 @@ static std::vector<size_t> insertionOrder(size_t n) {
     return order;
 }
 
-static size_t findIdPosition(const std::vector<size_t>& ids, size_t target) {
-    for (size_t i = 0; i < ids.size(); ++i) {
-        if (ids[i] == target)
-            return i;
-    }
-    return ids.size();
-}
-
 static size_t lowerBoundBlockPositionVec(const std::vector<int>& chain,
                                          int value,
                                          size_t limit,
                                          size_t pairLevel) {
-    std::vector<int> keys;
-    keys.reserve(limit);
-    for (size_t i = 0; i < limit; ++i)
-        keys.push_back(chain[(i + 1) * pairLevel - 1]);
-    return std::lower_bound(keys.begin(), keys.end(), value) - keys.begin();
+    size_t lo = 0, hi = limit;
+    while (lo < hi) {
+        size_t mid = (lo + hi) / 2;
+        ++g_comparisons;
+        if (chain[(mid + 1) * pairLevel - 1] < value)
+            lo = mid + 1;
+        else
+            hi = mid;
+    }
+    return lo;
 }
 
 static size_t lowerBoundBlockPositionDeq(const std::deque<int>& chain,
                                          int value,
                                          size_t limit,
                                          size_t pairLevel) {
-    std::vector<int> keys;
-    keys.reserve(limit);
-    for (size_t i = 0; i < limit; ++i)
-        keys.push_back(chain[(i + 1) * pairLevel - 1]);
-    return std::lower_bound(keys.begin(), keys.end(), value) - keys.begin();
+    size_t lo = 0, hi = limit;
+    while (lo < hi) {
+        size_t mid = (lo + hi) / 2;
+        ++g_comparisons;
+        if (chain[(mid + 1) * pairLevel - 1] < value)
+            lo = mid + 1;
+        else
+            hi = mid;
+    }
+    return lo;
 }
 
 static void fordJohnsonVec(std::vector<int>& arr, size_t activeSize, size_t pairLevel) {
@@ -87,7 +89,7 @@ static void fordJohnsonVec(std::vector<int>& arr, size_t activeSize, size_t pair
 
         size_t leftBlockStart = 2 * pairIndx * pairLevel;
         size_t rightBlockStart = (2 * pairIndx + 1) * pairLevel;
-        // compare leftBlockEnd and rightBllockEnd
+        ++g_comparisons;
         if (arr[leftBlockStart + pairLevel - 1] > arr[rightBlockStart + pairLevel - 1])
             for (size_t j = 0; j < pairLevel; ++j)
                 std::swap(arr[leftBlockStart + j], arr[rightBlockStart + j]);
@@ -97,35 +99,30 @@ static void fordJohnsonVec(std::vector<int>& arr, size_t activeSize, size_t pair
     fordJohnsonVec(arr, pairsCount * 2 * pairLevel, pairLevel * 2);
 
     // Step 3: main chain = b1 (loser of pair 0) + all winner blocks
-    const size_t noCompanion = static_cast<size_t>(-1);
     std::vector<int> mainChain;
-    std::vector<size_t> mainChainIds;
     mainChain.reserve(activeSize);
-    mainChainIds.reserve(blocksCount);
 
     // insert b1 (loser of pair 0) to main chain
     mainChain.insert(mainChain.end(), arr.begin(), arr.begin() + pairLevel);
-    mainChainIds.push_back(noCompanion);
     for (size_t pairIndx = 0; pairIndx < pairsCount; ++pairIndx) {
         // same as rightBlockStart
         size_t winnerStart = (2 * pairIndx + 1) * pairLevel; 
         mainChain.insert(mainChain.end(), arr.begin() + winnerStart, arr.begin() + winnerStart + pairLevel);
-        mainChainIds.push_back(pairIndx);
     }
 
-    // Collect pend blocks (losers of pairs 1..pairsCount-1) and companion ids
+    // Collect pend blocks (losers of pairs 1..pairsCount-1) and companion positions
     // pairsCount - 1, because b1 was sent to main chain
     size_t pendCount = pairsCount - 1;
     std::vector<int> pendFlat;
-    std::vector<size_t> companionIds;
+    std::vector<size_t> companionPositions;
     pendFlat.reserve(pendCount * pairLevel);
-    companionIds.reserve(pendCount);
+    companionPositions.reserve(pendCount);
 
     // start from 1, because b1 was sent to main chain
     for (size_t pairIndx = 1; pairIndx < pairsCount; ++pairIndx) {
         size_t loserStart = 2 * pairIndx * pairLevel;
         pendFlat.insert(pendFlat.end(), arr.begin() + loserStart, arr.begin() + loserStart + pairLevel);
-        companionIds.push_back(pairIndx);
+        companionPositions.push_back(pairIndx + 1);
     }
 
     // Step 4: insert pend blocks (+ stray) in Jacobsthal order
@@ -140,7 +137,7 @@ static void fordJohnsonVec(std::vector<int>& arr, size_t activeSize, size_t pair
         if (i < pendCount) {
             tempBlock.assign(pendFlat.begin() + i * pairLevel,
                        pendFlat.begin() + (i + 1) * pairLevel);
-            searchBorder = findIdPosition(mainChainIds, companionIds[i]);
+            searchBorder = companionPositions[i];
         } else {
             size_t strayStart = 2 * pairsCount * pairLevel;
             tempBlock.assign(arr.begin() + strayStart,
@@ -151,7 +148,10 @@ static void fordJohnsonVec(std::vector<int>& arr, size_t activeSize, size_t pair
         int val = tempBlock.back();
         size_t lo = lowerBoundBlockPositionVec(mainChain, val, searchBorder, pairLevel);
         mainChain.insert(mainChain.begin() + lo * pairLevel, tempBlock.begin(), tempBlock.end());
-        mainChainIds.insert(mainChainIds.begin() + lo, noCompanion);
+        for (size_t posIndex = 0; posIndex < companionPositions.size(); ++posIndex) {
+            if (companionPositions[posIndex] >= lo)
+                ++companionPositions[posIndex];
+        }
     }
 
     std::copy(mainChain.begin(), mainChain.end(), arr.begin());
@@ -173,6 +173,7 @@ static void fordJohnsonDeq(std::deque<int>& arr, size_t activeSize, size_t pairL
     for (size_t pairIdx = 0; pairIdx < pairsCount; ++pairIdx) {
         size_t leftBlockStart = 2 * pairIdx * pairLevel;
         size_t rightBlockStart = (2 * pairIdx + 1) * pairLevel;
+        ++g_comparisons;
         if (arr[leftBlockStart + pairLevel - 1] > arr[rightBlockStart + pairLevel - 1])
             for (size_t j = 0; j < pairLevel; ++j)
                 std::swap(arr[leftBlockStart + j], arr[rightBlockStart + j]);
@@ -180,30 +181,25 @@ static void fordJohnsonDeq(std::deque<int>& arr, size_t activeSize, size_t pairL
 
     fordJohnsonDeq(arr, pairsCount * 2 * pairLevel, pairLevel * 2);
 
-    const size_t noCompanion = static_cast<size_t>(-1);
     std::deque<int> chain;
-    std::vector<size_t> chainIds;
-    chainIds.reserve(blocksCount);
     for (size_t j = 0; j < pairLevel; ++j)
         chain.push_back(arr[j]);
-    chainIds.push_back(noCompanion);
     for (size_t pairIdx = 0; pairIdx < pairsCount; ++pairIdx) {
         size_t winnerStart = (2 * pairIdx + 1) * pairLevel;
         for (size_t j = 0; j < pairLevel; ++j)
             chain.push_back(arr[winnerStart + j]);
-        chainIds.push_back(pairIdx);
     }
 
     size_t pendCount = pairsCount - 1;
     std::vector<int> pendFlat;
-    std::vector<size_t> companionIds;
+    std::vector<size_t> companionPositions;
     pendFlat.reserve(pendCount * pairLevel);
-    companionIds.reserve(pendCount);
+    companionPositions.reserve(pendCount);
     for (size_t pairIdx = 1; pairIdx < pairsCount; ++pairIdx) {
         size_t leftBlockStart = 2 * pairIdx * pairLevel;
         for (size_t j = 0; j < pairLevel; ++j)
             pendFlat.push_back(arr[leftBlockStart + j]);
-        companionIds.push_back(pairIdx);
+        companionPositions.push_back(pairIdx + 1);
     }
 
     size_t pendTotal = pendCount + (hasStray ? 1 : 0);
@@ -217,7 +213,7 @@ static void fordJohnsonDeq(std::deque<int>& arr, size_t activeSize, size_t pairL
         if (i < pendCount) {
             blk.assign(pendFlat.begin() + i * pairLevel,
                        pendFlat.begin() + (i + 1) * pairLevel);
-            searchBorder = findIdPosition(chainIds, companionIds[i]);
+            searchBorder = companionPositions[i];
         } else {
             size_t strayStart = 2 * pairsCount * pairLevel;
             for (size_t j = 0; j < pairLevel; ++j)
@@ -227,7 +223,10 @@ static void fordJohnsonDeq(std::deque<int>& arr, size_t activeSize, size_t pairL
         int val = blk.back();
         size_t lo = lowerBoundBlockPositionDeq(chain, val, searchBorder, pairLevel);
         chain.insert(chain.begin() + lo * pairLevel, blk.begin(), blk.end());
-        chainIds.insert(chainIds.begin() + lo, noCompanion);
+        for (size_t posIndex = 0; posIndex < companionPositions.size(); ++posIndex) {
+            if (companionPositions[posIndex] >= lo)
+                ++companionPositions[posIndex];
+        }
     }
 
     for (size_t i = 0; i < activeSize; ++i)
@@ -263,17 +262,25 @@ PmergeMe::PmergeMe(const std::string& input) {
         std::cout << " " << raw[i];
     std::cout << std::endl;
 
-    _vec.assign(raw.begin(), raw.end());
-    clock_t t0 = clock();
-    fordJohnson(_vec);
-    clock_t t1 = clock();
-    double vecTime = static_cast<double>(t1 - t0) / CLOCKS_PER_SEC * 1e6;
+    struct timeval t0, t1, t2, t3;
 
+    g_comparisons = 0;
+    _vec.assign(raw.begin(), raw.end());
+    gettimeofday(&t0, NULL);
+    fordJohnson(_vec);
+    gettimeofday(&t1, NULL);
+    double vecTime = (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_usec - t0.tv_usec);
+    int vecCmp = g_comparisons;
+
+    g_comparisons = 0;
     _deq.assign(raw.begin(), raw.end());
-    clock_t t2 = clock();
+    gettimeofday(&t2, NULL);
     fordJohnson(_deq);
-    clock_t t3 = clock();
-    double deqTime = static_cast<double>(t3 - t2) / CLOCKS_PER_SEC * 1e6;
+    gettimeofday(&t3, NULL);
+    double deqTime = (t3.tv_sec - t2.tv_sec) * 1e6 + (t3.tv_usec - t2.tv_usec);
+    int deqCmp = g_comparisons;
+
+    int maxCmp = maxComparisons(static_cast<int>(raw.size()));
 
     std::cout << "After:";
     for (size_t i = 0; i < _vec.size(); ++i)
@@ -282,10 +289,12 @@ PmergeMe::PmergeMe(const std::string& input) {
 
     std::cout << "Time to process a range of " << raw.size()
               << " elements with std::vector : "
-              << std::fixed << std::setprecision(5) << vecTime << " us" << std::endl;
+              << std::fixed << std::setprecision(5) << vecTime
+              << " us [Comparisons: " << vecCmp << " / max: " << maxCmp << "]" << std::endl;
     std::cout << "Time to process a range of " << raw.size()
               << " elements with std::deque  : "
-              << std::fixed << std::setprecision(5) << deqTime << " us" << std::endl;
+              << std::fixed << std::setprecision(5) << deqTime
+              << " us [Comparisons: " << deqCmp << " / max: " << maxCmp << "]" << std::endl;
 }
 
 PmergeMe::~PmergeMe() {}
