@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Antigravity | BLOCK Chain Builder</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --main-chain: #10b981;
+            --pending: #f59e0b;
+            --text: #f8fafc;
+            --block-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            background: linear-gradient(90deg, var(--main-chain), var(--pending));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
+            margin: 0;
+        }
+
+        .controls {
+            background: var(--card);
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .visual-container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+        }
+
+        .board {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            min-height: 700px;
+        }
+
+        .row-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .row-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .row-area {
+            background: rgba(0, 0, 0, 0.2);
+            min-height: 100px;
+            border-radius: 16px;
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* BLOCK STYLING */
+        .block-unit {
+            display: flex;
+            flex-direction: column;
+            background: var(--block-bg);
+            border: 2px solid #475569;
+            border-radius: 12px;
+            padding: 6px;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .block-unit.winner {
+            border-color: #818cf8;
+        }
+
+        .block-unit.loser {
+            border-color: #94a3b8;
+        }
+
+        /* Final states */
+        .block-unit.main-state {
+            background: var(--main-chain);
+            border: none;
+            color: white;
+        }
+
+        .block-unit.pend-state {
+            background: var(--pending);
+            border: none;
+            color: white;
+        }
+
+        .block-elements {
+            display: flex;
+            gap: 4px;
+        }
+
+        .element {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .element.representative {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .block-tag {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-align: center;
+            margin-top: 4px;
+            color: #94a3b8;
+        }
+
+        .pair-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            border: 1px dashed #475569;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Sidebar */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .code-box {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            border: 1px solid #334155;
+        }
+
+        .code-line {
+            margin-bottom: 4px;
+            opacity: 0.4;
+            transition: 0.3s;
+        }
+
+        .code-line.active {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .status-msg {
+            background: rgba(56, 189, 248, 0.1);
+            padding: 1.2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--accent);
+        }
+
+        button {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 100px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        input[type="range"] {
+            accent-color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>BLOCK-based Chain Builder</h1>
+        <p style="color: #94a3b8">Демонстрация перемещения ЦЕЛЫХ БЛОКОВ в Main и Pend</p>
+    </div>
+
+    <div class="controls">
+        <label>pairLevel (Block Size): </label>
+        <input type="range" id="levelRange" min="1" max="4" value="1" step="1">
+        <span id="levelVal" style="font-weight: 700; color: var(--accent)">1</span>
+        <button id="startBtn">Запустить сборку</button>
+        <button id="resetBtn" style="background: transparent; color: white; border: 1px solid #475569">Сброс</button>
+    </div>
+
+    <div class="visual-container">
+        <div class="board">
+            <div class="row-section">
+                <div class="row-label">Pairs of Sorted Blocks (from recursion)</div>
+                <div class="row-area" id="sourceRow"></div>
+            </div>
+
+            <div class="row-section">
+                <div class="row-label">Main Chain (Blocks)</div>
+                <div class="row-area" id="mainRow"></div>
+            </div>
+
+            <div class="row-section">
+                <div class="row-label">Pending Chain (Blocks)</div>
+                <div class="row-area" id="pendRow"></div>
+            </div>
+        </div>
+
+        <div class="side-panel">
+            <div class="code-box">
+                <div class="code-line" id="c1">main.push_back(block_b1);</div>
+                <div class="code-line" id="c2">main.push_back(block_a1);</div>
+                <div class="code-line" id="c3">for (i = 1; i < pairs.size(); i++) {</div>
+                        <div class="code-line" id="c4"> main.push_back(pairs[i].a_block);</div>
+                        <div class="code-line" id="c5"> pend.push_back(pairs[i].b_block);</div>
+                        <div class="code-line" id="c6">}</div>
+                        <div class="code-line" id="c7">if (straggler) pend.push_back(strag);</div>
+                </div>
+
+                <div class="status-msg" id="status">
+                    Настройте pairLevel и нажмите "Запустить".
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const rawData = [15, 84, 42, 96, 23, 77, 31, 55, 10, 68, 33, 91, 5, 19, 44, 8, 50, 2];
+            const sourceRow = document.getElementById('sourceRow');
+            const mainRow = document.getElementById('mainRow');
+            const pendRow = document.getElementById('pendRow');
+            const levelRange = document.getElementById('levelRange');
+            const status = document.getElementById('status');
+            const startBtn = document.getElementById('startBtn');
+
+            let isRunning = false;
+
+            function createBlock(numbers, role, tag) {
+                const block = document.createElement('div');
+                block.className = `block-unit ${role}`;
+
+                const elementsDiv = document.createElement('div');
+                elementsDiv.className = 'block-elements';
+
+                numbers.forEach((val, idx) => {
+                    const el = document.createElement('div');
+                    el.className = 'element' + (idx === numbers.length - 1 ? ' representative' : '');
+                    el.innerText = val;
+                    elementsDiv.appendChild(el);
+                });
+
+                block.appendChild(elementsDiv);
+
+                const tagDiv = document.createElement('div');
+                tagDiv.className = 'block-tag';
+                tagDiv.innerText = tag;
+                block.appendChild(tagDiv);
+
+                return block;
+            }
+
+            function init() {
+                if (isRunning) return;
+                sourceRow.innerHTML = '';
+                mainRow.innerHTML = '';
+                pendRow.innerHTML = '';
+
+                const level = Math.pow(2, parseInt(levelRange.value) - 1);
+                document.getElementById('levelVal').innerText = level;
+
+                let i = 0;
+                let pairIdx = 1;
+                while (i + 2 * level <= rawData.length) {
+                    const group = document.createElement('div');
+                    group.className = 'pair-group';
+
+                    let b_nums = rawData.slice(i, i + level);
+                    let a_nums = rawData.slice(i + level, i + 2 * level);
+
+                    // Simulate sorted results from recursion (a.last > b.last)
+                    if (b_nums[level - 1] > a_nums[level - 1]) [b_nums, a_nums] = [a_nums, b_nums];
+
+                    group.appendChild(createBlock(b_nums, 'loser', `B${pairIdx}`));
+                    group.appendChild(createBlock(a_nums, 'winner', `A${pairIdx}`));
+                    sourceRow.appendChild(group);
+
+                    i += 2 * level;
+                    pairIdx++;
+                }
+
+                if (i + level <= rawData.length) {
+                    const strag = createBlock(rawData.slice(i, i + level), 'loser', 'Strag');
+                    sourceRow.appendChild(strag);
+                }
+
+                status.innerText = `Массив разбит на БЛОКИ размером ${level}. Победители определены по последним элементам (выделены).`;
+            }
+
+            const sleep = ms => new Promise(res => setTimeout(res, ms));
+
+            function highlight(id) {
+                document.querySelectorAll('.code-line').forEach(l => l.classList.remove('active'));
+                if (id) document.getElementById(id).classList.add('active');
+            }
+
+            async function moveBlock(block, targetArea, finalClass) {
+                const rect = block.getBoundingClientRect();
+                block.style.position = 'fixed';
+                block.style.left = rect.left + 'px';
+                block.style.top = rect.top + 'px';
+                block.style.zIndex = '1000';
+
+                await sleep(50);
+
+                const targetRect = targetArea.getBoundingClientRect();
+                const existing = targetArea.children.length;
+
+                block.style.left = (targetRect.left + 20 + existing * 120) + 'px';
+                block.style.top = (targetRect.top + 15) + 'px';
+
+                await sleep(700);
+
+                block.style.position = 'static';
+                block.className = `block-unit ${finalClass}`;
+                targetArea.appendChild(block);
+            }
+
+            async function run() {
+                isRunning = true;
+                startBtn.disabled = true;
+
+                const groups = Array.from(sourceRow.querySelectorAll('.pair-group'));
+                const straggler = sourceRow.querySelector('.block-unit:not(.winner):not(.loser)');
+
+                if (groups.length > 0) {
+                    const b1 = groups[0].querySelector('.block-unit.loser');
+                    const a1 = groups[0].querySelector('.block-unit.winner');
+
+                    status.innerText = "ШАГ 1: Первая пара особенная. Блок B1 переносим в Main Chain ПЕРЕД A1.";
+                    highlight('c1');
+                    await moveBlock(b1, mainRow, 'main-state');
+                    await sleep(500);
+
+                    status.innerText = "Теперь переносим блок A1 в Main Chain.";
+                    highlight('c2');
+                    await moveBlock(a1, mainRow, 'main-state');
+                    await sleep(1000);
+
+                    highlight('c3');
+                    status.innerText = "Для всех остальных пар: победители (A) идут в Main, проигравшие (B) — в Pend.";
+                    await sleep(1500);
+
+                    for (let i = 1; i < groups.length; i++) {
+                        const b = groups[i].querySelector('.block-unit.loser');
+                        const a = groups[i].querySelector('.block-unit.winner');
+
+                        status.innerText = `Пара ${i + 1}: Блок A${i + 1} отправляется в Main Chain.`;
+                        highlight('c4');
+                        await moveBlock(a, mainRow, 'main-state');
+                        await sleep(300);
+
+                        status.innerText = `Пара ${i + 1}: Блок B${i + 1} отправляется в Pending Chain.`;
+                        highlight('c5');
+                        await moveBlock(b, pendRow, 'pend-state');
+                        await sleep(600);
+                    }
+                }
+
+                if (straggler) {
+                    status.innerText = "Напоследок: блок-остаток (Straggler) идет в Pending.";
+                    highlight('c7');
+                    await moveBlock(straggler, pendRow, 'pend-state');
+                }
+
+                highlight(null);
+                status.innerText = "Сборка завершена! Теперь в цепях лежат ЦЕЛЫЕ БЛОКИ. Сравнение при вставке будет идти по их последним элементам.";
+                startBtn.disabled = false;
+                isRunning = false;
+            }
+
+            levelRange.oninput = init;
+            startBtn.onclick = run;
+            document.getElementById('resetBtn').onclick = () => location.reload();
+
+            init();
+        </script>
+</body>
+
+</html>

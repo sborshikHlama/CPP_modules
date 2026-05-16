@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Antigravity | Pend Insertion Visualizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f172a; --card: #1e293b; --accent: #38bdf8;
+  --main-c: #10b981; --pend-c: #f59e0b; --search-c: #818cf8;
+  --found-c: #f472b6; --text: #f8fafc; --dim: #64748b;
+  --companion-c: #06b6d4;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); padding:1.5rem; display:flex; flex-direction:column; align-items:center; min-height:100vh; }
+h1 { background:linear-gradient(90deg,var(--main-c),var(--pend-c)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:2rem; margin-bottom:.3rem; }
+.subtitle { color:var(--dim); margin-bottom:1.5rem; font-size:.95rem; }
+.controls { background:var(--card); padding:.8rem 1.5rem; border-radius:100px; display:flex; gap:1rem; align-items:center; margin-bottom:1.5rem; box-shadow:0 4px 20px rgba(0,0,0,.3); flex-wrap:wrap; justify-content:center; }
+.controls label { font-size:.85rem; color:var(--dim); }
+.controls select, .controls input { background:#0f172a; border:1px solid #475569; color:var(--text); padding:.4rem .6rem; border-radius:8px; font-family:inherit; }
+button { background:var(--accent); color:var(--bg); border:none; padding:.6rem 1.5rem; border-radius:100px; font-weight:700; cursor:pointer; transition:.3s; font-family:inherit; font-size:.85rem; }
+button:hover { transform:scale(1.05); }
+button:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+.btn-sec { background:transparent; color:var(--text); border:1px solid #475569; }
+.container { width:100%; max-width:1200px; display:grid; grid-template-columns:1fr 340px; gap:1.5rem; }
+@media(max-width:900px){ .container{grid-template-columns:1fr;} }
+.board { background:var(--card); border-radius:20px; padding:1.5rem; display:flex; flex-direction:column; gap:1.5rem; }
+.row-section { display:flex; flex-direction:column; gap:.5rem; }
+.row-label { font-size:.7rem; text-transform:uppercase; letter-spacing:.08rem; color:var(--dim); font-weight:600; display:flex; align-items:center; gap:.5rem; }
+.row-label .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+.row-area { background:rgba(0,0,0,.25); min-height:70px; border-radius:14px; display:flex; gap:6px; padding:10px; align-items:center; flex-wrap:wrap; border:1px solid rgba(255,255,255,.04); position:relative; transition:border-color .3s; }
+.row-area.search-active { border-color:var(--search-c); }
+.block { display:flex; flex-direction:column; align-items:center; gap:2px; padding:4px; border-radius:10px; border:2px solid transparent; transition:all .4s cubic-bezier(.23,1,.32,1); position:relative; }
+.block .els { display:flex; gap:2px; }
+.block .el { width:30px; height:30px; background:rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center; border-radius:5px; font-size:.8rem; font-weight:600; transition:background .3s; }
+.block .el.key { background:rgba(255,255,255,.18); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25); }
+.block .tag { font-size:.6rem; font-weight:700; color:var(--dim); }
+.block.main-bl { background:rgba(16,185,129,.15); border-color:var(--main-c); }
+.block.pend-bl { background:rgba(245,158,11,.15); border-color:var(--pend-c); }
+.block.searching { border-color:var(--search-c); box-shadow:0 0 12px rgba(129,140,248,.4); }
+.block.mid-check { background:rgba(129,140,248,.2); }
+.block.found { border-color:var(--found-c); box-shadow:0 0 16px rgba(244,114,182,.5); }
+.block.companion { border-color:var(--companion-c); box-shadow:0 0 12px rgba(6,182,212,.4); }
+.block.inserting { animation:pulse .6s ease-in-out; }
+.block.dimmed { opacity:.3; }
+.insert-marker { width:3px; min-height:40px; background:var(--found-c); border-radius:2px; animation:blink 1s infinite; margin:0 -2px; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.side { display:flex; flex-direction:column; gap:1rem; }
+.pseudo-box { background:#000; padding:1.2rem; border-radius:16px; font-family:'Fira Code',monospace; font-size:.72rem; border:1px solid #334155; line-height:1.7; }
+.pseudo-box .ln { opacity:.35; transition:.3s; white-space:pre; }
+.pseudo-box .ln.active { opacity:1; color:var(--accent); }
+.status-box { background:rgba(56,189,248,.08); padding:1rem; border-radius:14px; border:1px solid rgba(56,189,248,.15); font-size:.85rem; line-height:1.5; color:var(--accent); min-height:60px; }
+.legend { display:flex; flex-wrap:wrap; gap:.6rem; font-size:.7rem; }
+.legend span { display:flex; align-items:center; gap:4px; }
+.legend .swatch { width:10px; height:10px; border-radius:3px; }
+.step-counter { font-size:.75rem; color:var(--dim); text-align:center; }
+</style>
+</head>
+<body>
+
+<h1>Pend → Main Insertion Visualizer</h1>
+<p class="subtitle">Как pend-блоки вставляются в main chain через бинарный поиск (Ford-Johnson)</p>
+
+<div class="controls">
+  <label>pairLevel:</label>
+  <select id="levelSel"><option value="1" selected>1</option><option value="2">2</option><option value="4">4</option></select>
+  <label>Скорость:</label>
+  <select id="speedSel"><option value="1200">Медленно</option><option value="700" selected>Нормально</option><option value="350">Быстро</option></select>
+  <button id="stepBtn">▶ Шаг</button>
+  <button id="autoBtn">▶▶ Авто</button>
+  <button id="resetBtn" class="btn-sec">⟳ Сброс</button>
+</div>
+
+<div class="container">
+<div class="board">
+  <div class="row-section">
+    <div class="row-label"><span class="dot" style="background:var(--main-c)"></span> Main Chain (blocks)</div>
+    <div class="row-area" id="mainRow"></div>
+  </div>
+  <div class="row-section">
+    <div class="row-label"><span class="dot" style="background:var(--pend-c)"></span> Pending Chain (blocks)</div>
+    <div class="row-area" id="pendRow"></div>
+  </div>
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--pend-c)"></span> Текущий pend</span>
+    <span><span class="swatch" style="background:var(--companion-c)"></span> Companion (граница)</span>
+    <span><span class="swatch" style="background:var(--search-c)"></span> Binary search mid</span>
+    <span><span class="swatch" style="background:var(--found-c)"></span> Точка вставки</span>
+  </div>
+  <div class="step-counter" id="stepInfo"></div>
+</div>
+
+<div class="side">
+  <div class="pseudo-box" id="codeBox"></div>
+  <div class="status-box" id="status">Нажмите «Шаг» или «Авто» чтобы начать вставку pend-блоков в main chain.</div>
+</div>
+</div>
+
+<script>
+const RAW = [15,84,42,96,23,77,31,55,10,68,33,91,5,19,44,8];
+
+const PSEUDO = [
+  'for each idx in jacobsthalOrder:',
+  '  pendBlock = pend[idx]',
+  '  pendKey = last element of pendBlock',
+  '  companion = a_(idx+2) in main',
+  '  companionIdx = find companion in main',
+  '  highBlock = companionIdx  // bounded!',
+  '  lowBlock = 0',
+  '  while lowBlock < highBlock:',
+  '    mid = (low + high) / 2',
+  '    midKey = main[mid].lastElement',
+  '    if pendKey > midKey: low = mid+1',
+  '    else: high = mid',
+  '  insertPos = lowBlock',
+  '  main.insert(insertPos, pendBlock)',
+];
+
+let pairLevel, speed, mainBlocks, pendBlocks, insertionOrder;
+let stepQueue, autoRunning = false, currentStep = 0, totalSteps = 0;
+
+function init() {
+  pairLevel = parseInt(document.getElementById('levelSel').value);
+  speed = parseInt(document.getElementById('speedSel').value);
+  autoRunning = false; currentStep = 0;
+  document.getElementById('stepBtn').disabled = false;
+  document.getElementById('autoBtn').disabled = false;
+
+  // Build pairs, sort, then build main/pend
+  const blocks = [];
+  for (let i = 0; i + pairLevel <= RAW.length; i += pairLevel)
+    blocks.push(RAW.slice(i, i + pairLevel));
+
+  const pairs = [];
+  for (let i = 0; i + 1 < blocks.length; i += 2) {
+    let b = blocks[i], a = blocks[i+1];
+    if (b[pairLevel-1] > a[pairLevel-1]) [b, a] = [a, b];
+    pairs.push({b, a});
+  }
+  const strag = (blocks.length % 2 === 1) ? blocks[blocks.length-1] : null;
+
+  // Sort pairs by a's key (last element)
+  pairs.sort((x,y) => x.a[pairLevel-1] - y.a[pairLevel-1]);
+
+  // Build main: b1, a1, a2, a3, ...
+  mainBlocks = [];
+  pendBlocks = [];
+  if (pairs.length > 0) {
+    mainBlocks.push({nums: pairs[0].b, tag:'b1', origPair:0});
+    mainBlocks.push({nums: pairs[0].a, tag:'a1', origPair:0});
+    for (let i = 1; i < pairs.length; i++) {
+      mainBlocks.push({nums: pairs[i].a, tag:'a'+(i+1), origPair:i});
+      pendBlocks.push({nums: pairs[i].b, tag:'b'+(i+1), origPair:i, companionTag:'a'+(i+1)});
+    }
+  }
+  if (strag) pendBlocks.push({nums:strag, tag:'strag', origPair:-1, companionTag:null});
+
+  // Generate Jacobsthal insertion order for pendBlocks
+  insertionOrder = genJacobOrder(pendBlocks.length);
+  totalSteps = insertionOrder.length;
+
+  // Build step queue
+  stepQueue = [...insertionOrder];
+
+  render();
+  renderCode(-1);
+  document.getElementById('status').textContent = `Main: ${mainBlocks.length} блоков, Pend: ${pendBlocks.length} блоков. Порядок вставки (Jacobsthal): [${insertionOrder.map(i=>pendBlocks[i]?.tag).join(', ')}]`;
+  document.getElementById('stepInfo').textContent = `Шаг 0 / ${totalSteps}`;
+}
+
+function genJacobOrder(size) {
+  if (size === 0) return [];
+  const jacob = [0, 1];
+  while (jacob[jacob.length-1] < size)
+    jacob.push(Math.round(((1 << (jacob.length+1)) + (jacob.length % 2 === 0 ? 1 : -1)) / 3));
+  const order = [];
+  for (let i = 1; i < jacob.length && order.length < size; i++) {
+    const prev = jacob[i-1], curr = jacob[i];
+    const upper = Math.min(curr, size);
+    for (let j = upper; j > prev; j--) order.push(j-1);
+  }
+  return order;
+}
+
+function createBlockEl(block, cls) {
+  const div = document.createElement('div');
+  div.className = 'block ' + cls;
+  div.dataset.tag = block.tag;
+  const els = document.createElement('div');
+  els.className = 'els';
+  block.nums.forEach((v,i) => {
+    const e = document.createElement('div');
+    e.className = 'el' + (i === block.nums.length-1 ? ' key' : '');
+    e.textContent = v;
+    els.appendChild(e);
+  });
+  div.appendChild(els);
+  const t = document.createElement('div');
+  t.className = 'tag';
+  t.textContent = block.tag;
+  div.appendChild(t);
+  return div;
+}
+
+function render() {
+  const mr = document.getElementById('mainRow'); mr.innerHTML = '';
+  mainBlocks.forEach(b => mr.appendChild(createBlockEl(b, 'main-bl')));
+  const pr = document.getElementById('pendRow'); pr.innerHTML = '';
+  pendBlocks.forEach(b => pr.appendChild(createBlockEl(b, 'pend-bl')));
+}
+
+function renderCode(line) {
+  const box = document.getElementById('codeBox'); box.innerHTML = '';
+  PSEUDO.forEach((txt, i) => {
+    const d = document.createElement('div');
+    d.className = 'ln' + (i === line ? ' active' : '');
+    d.textContent = txt;
+    box.appendChild(d);
+  });
+}
+
+function highlightMain(indices, cls) {
+  const mr = document.getElementById('mainRow');
+  Array.from(mr.children).forEach((el, i) => {
+    el.classList.remove('searching','mid-check','found','companion','dimmed');
+    if (indices.includes(i)) el.classList.add(cls);
+  });
+}
+
+function dimMainExcept(lo, hi) {
+  const mr = document.getElementById('mainRow');
+  Array.from(mr.children).forEach((el, i) => {
+    el.classList.remove('dimmed');
+    if (i < lo || i >= hi) el.classList.add('dimmed');
+  });
+}
+
+function clearHighlights() {
+  document.querySelectorAll('.block').forEach(el => {
+    el.classList.remove('searching','mid-check','found','companion','dimmed','inserting');
+  });
+}
+
+function highlightPend(tag) {
+  const pr = document.getElementById('pendRow');
+  Array.from(pr.children).forEach(el => {
+    el.classList.remove('searching');
+    if (el.dataset.tag === tag) el.classList.add('searching');
+  });
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const status = msg => document.getElementById('status').textContent = msg;
+
+async function doOneStep() {
+  if (stepQueue.length === 0) return false;
+  const pendIdx = stepQueue.shift();
+  const pBlock = pendBlocks[pendIdx];
+  currentStep++;
+  document.getElementById('stepInfo').textContent = `Шаг ${currentStep} / ${totalSteps}`;
+
+  const pendKey = pBlock.nums[pBlock.nums.length - 1];
+
+  // Step 1: highlight current pend block
+  render();
+  highlightPend(pBlock.tag);
+  renderCode(1);
+  status(`Берём pend-блок «${pBlock.tag}» (key=${pendKey})`);
+  await sleep(speed);
+
+  // Step 2: find companion in main (bounded search limit)
+  let companionIdx = mainBlocks.length; // default: full search
+  if (pBlock.companionTag) {
+    companionIdx = mainBlocks.findIndex(m => m.tag === pBlock.companionTag);
+    if (companionIdx === -1) companionIdx = mainBlocks.length;
+    highlightMain([companionIdx], 'companion');
+    renderCode(4);
+    status(`Companion «${pBlock.companionTag}» найден в main[${companionIdx}]. Ищем в [0, ${companionIdx}).`);
+  } else {
+    renderCode(4);
+    status(`Straggler — ищем по всему main [0, ${mainBlocks.length}).`);
+  }
+  await sleep(speed);
+
+  // Step 3: binary search
+  let lo = 0, hi = companionIdx;
+  dimMainExcept(lo, hi);
+  renderCode(7);
+  status(`Binary search: low=${lo}, high=${hi}, ищем место для key=${pendKey}`);
+  await sleep(speed * 0.7);
+
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    const midKey = mainBlocks[mid].nums[mainBlocks[mid].nums.length - 1];
+    clearHighlights();
+    highlightPend(pBlock.tag);
+    dimMainExcept(lo, hi);
+    highlightMain([mid], 'mid-check');
+    if (pBlock.companionTag) {
+      const ci = mainBlocks.findIndex(m => m.tag === pBlock.companionTag);
+      if (ci >= 0) highlightMain([ci], 'companion');
+    }
+    renderCode(pendKey > midKey ? 10 : 11);
+    status(`mid=${mid}, midKey=${midKey} vs pendKey=${pendKey} → ${pendKey > midKey ? 'low = '+(mid+1) : 'high = '+mid}`);
+    await sleep(speed);
+    if (pendKey > midKey) lo = mid + 1; else hi = mid;
+  }
+
+  // Step 4: insert
+  const insertPos = lo;
+  clearHighlights();
+  highlightPend(pBlock.tag);
+  highlightMain([insertPos], 'found');
+  renderCode(13);
+  status(`Вставляем «${pBlock.tag}» (key=${pendKey}) в позицию main[${insertPos}]`);
+  await sleep(speed);
+
+  // Do the insert
+  const removed = pendBlocks.splice(pendIdx, 1)[0];
+  // Adjust remaining stepQueue indices
+  stepQueue = stepQueue.map(i => i > pendIdx ? i - 1 : i);
+  mainBlocks.splice(insertPos, 0, {...removed, origPair: removed.origPair});
+
+  render();
+  // Flash inserted block
+  const mr = document.getElementById('mainRow');
+  if (mr.children[insertPos]) mr.children[insertPos].classList.add('inserting');
+  renderCode(13);
+  status(`✓ «${removed.tag}» вставлен в main[${insertPos}]. Main теперь ${mainBlocks.length} блоков.`);
+  await sleep(speed * 0.8);
+  clearHighlights();
+
+  return stepQueue.length > 0;
+}
+
+document.getElementById('stepBtn').onclick = async function() {
+  this.disabled = true;
+  const more = await doOneStep();
+  if (!more) {
+    status('✅ Все pend-блоки вставлены! Main chain полностью собран.');
+    document.getElementById('autoBtn').disabled = true;
+  }
+  this.disabled = false;
+};
+
+document.getElementById('autoBtn').onclick = async function() {
+  if (autoRunning) { autoRunning = false; this.textContent = '▶▶ Авто'; return; }
+  autoRunning = true;
+  this.textContent = '⏸ Пауза';
+  document.getElementById('stepBtn').disabled = true;
+  while (autoRunning) {
+    const more = await doOneStep();
+    if (!more) { autoRunning = false; status('✅ Все pend-блоки вставлены! Main chain полностью собран.'); break; }
+  }
+  this.textContent = '▶▶ Авто';
+  document.getElementById('stepBtn').disabled = false;
+};
+
+document.getElementById('resetBtn').onclick = init;
+document.getElementById('levelSel').onchange = init;
+
+init();
+</script>
+</body>
+</html>

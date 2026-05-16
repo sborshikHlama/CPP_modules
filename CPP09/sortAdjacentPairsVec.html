@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Antigravity | Ford-Johnson Visualizer</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.3);
+            --left-block: #818cf8;
+            --right-block: #fb7185;
+            --text: #f8fafc;
+            --code-bg: #000000;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        /* Visualization Area */
+        .visual-box {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .array-container {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: flex-end;
+            padding: 4rem 0;
+            min-height: 200px;
+        }
+
+        .element {
+            width: 45px;
+            height: 45px;
+            background: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .element.active-left {
+            border-color: var(--left-block);
+            box-shadow: 0 0 15px var(--left-block);
+        }
+
+        .element.active-right {
+            border-color: var(--right-block);
+            box-shadow: 0 0 15px var(--right-block);
+        }
+
+        .element.representative {
+            transform: translateY(-15px);
+        }
+
+        .element::after {
+            content: attr(data-index);
+            position: absolute;
+            bottom: -25px;
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        /* Block Indicators */
+        .block-label {
+            position: absolute;
+            bottom: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--card);
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            accent-color: var(--accent);
+        }
+
+        button {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 100px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Outfit';
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        button:disabled {
+            background: #475569;
+            cursor: not-allowed;
+        }
+
+        /* Code Panel */
+        .code-panel {
+            background: var(--code-bg);
+            border-radius: 24px;
+            padding: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .code-line {
+            padding: 2px 8px;
+            border-radius: 4px;
+            opacity: 0.6;
+            transition: all 0.2s;
+            white-space: pre;
+        }
+
+        .code-line.active {
+            background: #1e293b;
+            opacity: 1;
+            color: var(--accent);
+            border-left: 3px solid var(--accent);
+        }
+
+        .status-text {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            color: var(--accent);
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .legend {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        @keyframes swap-anim {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-30px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>sortAdjacentPairs Visualization</h1>
+        <p style="color: #94a3b8">Демонстрация сравнения блоков в алгоритме Форда-Джонсона</p>
+    </div>
+
+    <div class="controls">
+        <label>Level (pairLevel): </label>
+        <input type="range" id="levelRange" min="1" max="4" value="1" step="1">
+        <span id="levelVal">1</span>
+        <button id="startBtn">Запустить</button>
+        <button id="resetBtn">Сброс</button>
+    </div>
+
+    <div class="container">
+        <div class="visual-box">
+            <div class="array-container" id="arrayContainer"></div>
+
+            <div class="status-text" id="status">Нажмите "Запустить" для начала визуализации.</div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="dot" style="background: var(--left-block)"></div> Левый блок (Left)
+                </div>
+                <div class="legend-item">
+                    <div class="dot" style="background: var(--right-block)"></div> Правый блок (Right)
+                </div>
+                <div class="legend-item">
+                    <div class="dot" style="background: var(--accent)"></div> Репрезентант (Last)
+                </div>
+            </div>
+        </div>
+
+        <div class="code-panel" id="codePanel">
+            <div class="code-line" id="line1">size_t i = 0;</div>
+            <div class="code-line" id="line2">while (i + 2 * pairLevel <= vec.size()) {</div>
+                    <div class="code-line" id="line3"> size_t leftStart = i;</div>
+                    <div class="code-line" id="line4"> size_t rightStart = i + pairLevel;</div>
+                    <div class="code-line" id="line5"> int leftLast = vec[leftStart + pairLevel - 1];</div>
+                    <div class="code-line" id="line6"> int rightLast = vec[rightStart + pairLevel - 1];</div>
+                    <div class="code-line" id="line7"> if (leftLast > rightLast) {</div>
+                    <div class="code-line" id="line8"> _swapBlockVec(vec, leftStart, pairLevel);</div>
+                    <div class="code-line" id="line9"> }</div>
+                    <div class="code-line" id="line10"> i += 2 * pairLevel;</div>
+                    <div class="code-line" id="line11">}</div>
+            </div>
+        </div>
+
+        <script>
+            const arrayContainer = document.getElementById('arrayContainer');
+            const startBtn = document.getElementById('startBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const levelRange = document.getElementById('levelRange');
+            const levelVal = document.getElementById('levelVal');
+            const status = document.getElementById('status');
+            const codeLines = document.querySelectorAll('.code-line');
+
+            let data = [84, 12, 45, 96, 23, 71, 38, 59, 10, 64, 33, 91];
+            let elements = [];
+            let isRunning = false;
+
+            function initArray() {
+                arrayContainer.innerHTML = '';
+                elements = [];
+                data.forEach((val, idx) => {
+                    const el = document.createElement('div');
+                    el.className = 'element';
+                    el.innerText = val;
+                    el.dataset.index = idx;
+                    arrayContainer.appendChild(el);
+                    elements.push(el);
+                });
+            }
+
+            function highlightLine(id) {
+                codeLines.forEach(l => l.classList.remove('active'));
+                if (id) document.getElementById('line' + id).classList.add('active');
+            }
+
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+            async function swapElements(idx1, idx2) {
+                const el1 = elements[idx1];
+                const el2 = elements[idx2];
+
+                const rect1 = el1.getBoundingClientRect();
+                const rect2 = el2.getBoundingClientRect();
+                const diffX = rect2.left - rect1.left;
+
+                el1.style.transform = `translate(${diffX}px, -20px)`;
+                el2.style.transform = `translate(${-diffX}px, 20px)`;
+
+                await sleep(600);
+
+                el1.style.transition = 'none';
+                el2.style.transition = 'none';
+                el1.style.transform = '';
+                el2.style.transform = '';
+
+                // Swap in DOM and array
+                const parent = el1.parentNode;
+                const next1 = el1.nextSibling;
+                const next2 = el2.nextSibling;
+
+                if (next1 === el2) {
+                    parent.insertBefore(el2, el1);
+                } else {
+                    parent.insertBefore(el1, next2);
+                    parent.insertBefore(el2, next1);
+                }
+
+                [elements[idx1], elements[idx2]] = [elements[idx2], elements[idx1]];
+                [data[idx1], data[idx2]] = [data[idx2], data[idx1]];
+
+                el1.offsetHeight; // force reflow
+                el2.offsetHeight;
+                el1.style.transition = '';
+                el2.style.transition = '';
+            }
+
+            async function visualize() {
+                isRunning = true;
+                startBtn.disabled = true;
+                const pairLevel = parseInt(levelRange.value);
+                let n = data.length;
+
+                highlightLine(1);
+                status.innerText = `Инициализация: i = 0. Размер блока = ${pairLevel}.`;
+                await sleep(1000);
+
+                for (let i = 0; i + 2 * pairLevel <= n; i += 2 * pairLevel) {
+                    highlightLine(2);
+                    await sleep(500);
+
+                    const leftStart = i;
+                    const rightStart = i + pairLevel;
+                    const leftEnd = leftStart + pairLevel - 1;
+                    const rightEnd = rightStart + pairLevel - 1;
+
+                    highlightLine(3);
+                    highlightLine(4);
+
+                    // Highlight blocks
+                    for (let k = 0; k < pairLevel; k++) {
+                        elements[leftStart + k].classList.add('active-left');
+                        elements[rightStart + k].classList.add('active-right');
+                    }
+                    status.innerText = `Рассматриваем пару блоков. Левый начинается с ${leftStart}, правый с ${rightStart}.`;
+                    await sleep(1000);
+
+                    // Highlight representatives
+                    highlightLine(5);
+                    highlightLine(6);
+                    elements[leftEnd].classList.add('representative');
+                    elements[rightEnd].classList.add('representative');
+                    status.innerText = `Сравниваем последних участников (репрезентантов): ${data[leftEnd]} vs ${data[rightEnd]}`;
+                    await sleep(1500);
+
+                    highlightLine(7);
+                    if (data[leftEnd] > data[rightEnd]) {
+                        status.innerText = `Так как ${data[leftEnd]} > ${data[rightEnd]}, меняем блоки местами!`;
+                        highlightLine(8);
+
+                        // Swap block animation
+                        for (let k = 0; k < pairLevel; k++) {
+                            await swapElements(leftStart + k, rightStart + k);
+                        }
+                        await sleep(500);
+                    } else {
+                        status.innerText = `Так как ${data[leftEnd]} <= ${data[rightEnd]}, блоки остаются на местах.`;
+                        await sleep(1000);
+                    }
+
+                    // Cleanup highlights
+                    elements.forEach(el => {
+                        el.classList.remove('active-left', 'active-right', 'representative');
+                    });
+
+                    highlightLine(10);
+                    status.innerText = `Переходим к следующей паре: i += ${2 * pairLevel}`;
+                    await sleep(1000);
+                }
+
+                highlightLine(11);
+                status.innerText = "Цикл завершен. Смежные пары на уровне " + pairLevel + " упорядочены.";
+                startBtn.disabled = false;
+                isRunning = false;
+            }
+
+            levelRange.oninput = () => {
+                levelVal.innerText = levelRange.value;
+                reset();
+            };
+
+            function reset() {
+                if (isRunning) return;
+                data = [84, 12, 45, 96, 23, 71, 38, 59, 10, 64, 33, 91];
+                initArray();
+                highlightLine(null);
+                status.innerText = "Сброс выполнен. Выберите pairLevel и нажмите Запустить.";
+            }
+
+            startBtn.onclick = visualize;
+            resetBtn.onclick = reset;
+
+            initArray();
+        </script>
+</body>
+
+</html>
