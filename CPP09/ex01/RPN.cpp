@@ -7,7 +7,7 @@ RPN::RPN(const RPN &other) { *this = other; }
 
 RPN::RPN(const std::string &input) {
     for (std::string::const_iterator it = input.begin(); it != input.end(); it++) {
-        if (std::isdigit(*it)) {
+        if (std::isdigit(*it) ) {
             this->_stack.push(*it - '0');
         } else if (*it == '+') {
             _execOp(&RPN::_plusOp);

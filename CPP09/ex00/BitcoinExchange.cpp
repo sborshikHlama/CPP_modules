@@ -59,7 +59,11 @@ bool BitcoinExchange::_checkDate(const std::string &date) const {
     if (!_isAllDigits(yearStr) || !_isAllDigits(monthStr) || !_isAllDigits(dayStr))
         return false;
     
-    return _isValidDate(std::atoi(yearStr.c_str()), std::atoi(monthStr.c_str()), std::atoi(dayStr.c_str()));
+    int year, month, day;
+    std::istringstream(yearStr) >> year;
+    std::istringstream(monthStr) >> month;
+    std::istringstream(dayStr) >> day;
+    return _isValidDate(year, month, day);
 }
 
 bool BitcoinExchange::_checkPrice(const std::string &price) const {
@@ -84,20 +88,27 @@ bool BitcoinExchange::_checkPrice(const std::string &price) const {
 void BitcoinExchange::loadDB(const std::string &filename) {
     std::ifstream file(filename.c_str());
     if (!file.is_open()) {
-        std::cerr << "Error: could not open database file." << std::endl;
+        std::cout << "Error: could not open database file." << std::endl;
         return;
     }
     
     std::string line;
-    std::getline(file, line); // Skip header
+    bool firstLine = true;
     while (std::getline(file, line)) {
+        if (firstLine) {
+            firstLine = false;
+            if (line.find("date") != std::string::npos)
+                continue;
+        }
+        if (line.empty()) continue;
         size_t commaPos = line.find(',');
         if (commaPos != std::string::npos) {
             std::string date = _trim(line.substr(0, commaPos));
             std::string rateStr = _trim(line.substr(commaPos + 1));
-            
             if (_checkDate(date)) {
-                this->_db[date] = std::atof(rateStr.c_str());
+                double rate = 0.0;
+                std::istringstream(rateStr) >> rate;
+                this->_db[date] = rate;
             }
         }
     }
@@ -107,52 +118,57 @@ void BitcoinExchange::loadDB(const std::string &filename) {
 void BitcoinExchange::processInput(const std::string &filename) {
     std::ifstream file(filename.c_str());
     if (!file.is_open()) {
-        std::cerr << "Error: could not open file." << std::endl;
+        std::cout << "Error: could not open file." << std::endl;
         return;
     }
     
     std::string line;
-    std::getline(file, line); // Skip header (date | value)
+    bool firstLine = true;
     while (std::getline(file, line)) {
+        if (firstLine) {
+            firstLine = false;
+            if (line.find("date") != std::string::npos)
+                continue;
+        }
         if (line.empty()) continue;
-        
+
         size_t pipePos = line.find('|');
         if (pipePos == std::string::npos) {
             std::cout << "Error: bad input => " << line << std::endl;
             continue;
         }
-        
+
         std::string date = _trim(line.substr(0, pipePos));
         std::string valueStr = _trim(line.substr(pipePos + 1));
-        
+
         if (!_checkDate(date)) {
             std::cout << "Error: bad input => " << date << std::endl;
             continue;
         }
-        
-        if (valueStr.empty() || (valueStr[0] == '-' && valueStr.length() == 1)) {
-             std::cout << "Error: bad input => " << valueStr << std::endl;
-             continue;
-        }
 
-        bool isNegative = (valueStr[0] == '-');
-        std::string absValueStr = isNegative ? valueStr.substr(1) : valueStr;
-
-        if (!_checkPrice(absValueStr)) {
+        if (valueStr.empty()) {
             std::cout << "Error: bad input => " << valueStr << std::endl;
             continue;
         }
-        
-        double value = std::atof(valueStr.c_str());
-        if (value < 0) {
+
+        if (valueStr[0] == '-') {
             std::cout << "Error: not a positive number." << std::endl;
             continue;
         }
+
+        if (!_checkPrice(valueStr)) {
+            std::cout << "Error: bad input => " << valueStr << std::endl;
+            continue;
+        }
+
+        double value;
+        std::istringstream(valueStr) >> value;
+
         if (value > 1000) {
             std::cout << "Error: too large a number." << std::endl;
             continue;
         }
-        
+
         std::map<std::string, double>::iterator it = _db.lower_bound(date);
         if (it != _db.end() && it->first == date) {
             std::cout << date << " => " << value << " = " << value * it->second << std::endl;
