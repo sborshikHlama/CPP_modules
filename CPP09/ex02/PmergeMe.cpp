@@ -22,16 +22,32 @@ static int maxComparisons(int n) {
 
 // Returns 0-indexed pend positions to insert in Jacobsthal order (high to low
 // within each group), ensuring every binary search range is 2^k-1 elements.
+// Returns 0-based pend indices in Ford-Johnson insertion order.
+// Jacobsthal groups are processed high-to-low so each binary search
+// sees at most 2^k - 1 candidates, achieving the comparison optimum.
+//
+// Jacobsthal sequence used here: 1, 3, 5, 11, 21, 43, ...
+//   J(k) = J(k-1) + 2 * J(k-2)
+//
+// b is a 1-based index into the b-sequence (b1 is already in main).
+// pend[0] = b2, pend[1] = b3, ..., so:  pend index = b - 2
 static std::vector<size_t> insertionOrder(size_t n) {
     std::vector<size_t> order;
-    size_t prevJ = 1;
-    long currJ = 3, lastJ = 1;
+    order.reserve(n);
+
+    long jPrev = 1;  // previous Jacobsthal number (group lower bound, exclusive)
+    long jCurr = 3;  // current  Jacobsthal number (group upper bound, inclusive)
+
     while (order.size() < n) {
-        size_t hi = (size_t)std::min(currJ, (long)(n + 1));
-        for (size_t b = hi; b > prevJ && order.size() < n; --b)
+        // Clamp group end so b-2 stays within pend bounds [0, n-1]
+        size_t groupEnd = std::min((size_t)jCurr, n + 1);
+
+        for (size_t b = groupEnd; b > (size_t)jPrev && order.size() < n; --b)
             order.push_back(b - 2);
-        prevJ = hi;
-        long next = currJ + 2 * lastJ; lastJ = currJ; currJ = next;
+
+        long jNext = jCurr + 2 * jPrev;
+        jPrev = jCurr;
+        jCurr = jNext;
     }
     return order;
 }
