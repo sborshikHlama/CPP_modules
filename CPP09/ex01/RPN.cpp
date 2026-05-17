@@ -32,33 +32,33 @@ RPN &RPN::operator=(const RPN &other) {
 
 RPN::~RPN() {}
 
-double RPN::_plusOp(double &a, double &b) {
+int RPN::_plusOp(int &a, int &b) {
   return b + a;
 }
-double RPN::_minusOp(double &a, double &b) {
+int RPN::_minusOp(int &a, int &b) {
   return b - a;
 }
-double RPN::_multOp(double &a, double &b) {
+int RPN::_multOp(int &a, int &b) {
   return b * a;
 }
-double RPN::_divOp(double &a, double &b) {
+int RPN::_divOp(int &a, int &b) {
   if (a == 0)
     throw std::runtime_error("Error");
   return b / a;
 }
 
-void RPN::_execOp(double (RPN::*callback)(double &a, double &b)) {
+void RPN::_execOp(int (RPN::*callback)(int &a, int &b)) {
   if (this->_stack.size() < 2)
     throw std::runtime_error("Error");
 
-  double a = this->_stack.top();
+  int a = this->_stack.top();
   this->_stack.pop();
-  double b = this->_stack.top();
+  int b = this->_stack.top();
   this->_stack.pop();
   this->_stack.push((this->*callback)(a, b));
 }
 
-double RPN::getResult() 
+int RPN::getResult() 
 {
 	if (_stack.empty())
 		throw std::runtime_error("Error");

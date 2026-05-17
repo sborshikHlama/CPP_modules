@@ -2,7 +2,6 @@
 #define RPN_HPP
 
 #include <stack>
-#include <vector>
 #include <string>
 
 class RPN {
@@ -11,16 +10,16 @@ class RPN {
         RPN(const std::string &input);
         RPN(const RPN &other);
         RPN &operator=(const RPN &other);
-        double getResult();
+        int getResult();
         ~RPN();
 
     private:
-      std::stack<double, std::vector<double> > _stack; // Changed to double, std::vector<double> > for consistency with _execOp and C++98
-      void _execOp(double (RPN::*callback)(double &, double &));
-      double _plusOp(double &a, double &b);
-      double _minusOp(double &a, double &b);
-      double _multOp(double &a, double &b);
-      double _divOp(double &a, double &b);
+      std::stack<int> _stack;
+      void _execOp(int (RPN::*callback)(int &, int &));
+      int _plusOp(int &a, int &b);
+      int _minusOp(int &a, int &b);
+      int _multOp(int &a, int &b);
+      int _divOp(int &a, int &b);
 
 };
 
