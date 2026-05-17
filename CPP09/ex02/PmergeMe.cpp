@@ -16,7 +16,7 @@ struct IntComp {
 static int maxComparisons(int n) {
     int sum = 0;
     for (int k = 1; k <= n; ++k)
-        sum += static_cast<int>(ceil(log2(3.0 * k / 2.0)));
+        sum += static_cast<int>(ceil(log2(3.0 * k / 4.0)));
     return sum;
 }
 
@@ -250,7 +250,7 @@ PmergeMe::PmergeMe(const std::string& input) {
             if (!isdigit(token[i]))
                 throw std::runtime_error("Error");
         long val = std::atol(token.c_str());
-        if (val <= 0 || val > 2147483647L)
+        if (val < 0 || val > 2147483647L)
             throw std::runtime_error("Error");
         raw.push_back(static_cast<int>(val));
     }
@@ -295,6 +295,7 @@ PmergeMe::PmergeMe(const std::string& input) {
               << " elements with std::deque  : "
               << std::fixed << std::setprecision(5) << deqTime
               << " us [Comparisons: " << deqCmp << " / max: " << maxCmp << "]" << std::endl;
+    std::cout << "Number of comparisons: " << vecCmp << std::endl;
 }
 
 PmergeMe::~PmergeMe() {}
