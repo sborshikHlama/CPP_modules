@@ -1,5 +1,6 @@
 #include "RPN.hpp"
 #include <cctype>
+#include <stdexcept>
 
 RPN::RPN() {}
 
